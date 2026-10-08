@@ -1,0 +1,23 @@
+name: Lean
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+      - name: Run the paid-call demo
+        run: lake exe demo
+      - name: Audit theorem assumptions
+        run: lake env lean scripts/Audit.lean

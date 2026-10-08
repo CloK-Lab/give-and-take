@@ -1,0 +1,13 @@
+name = "give-and-take"
+version = "0.1.0"
+defaultTargets = ["GiveAndTake", "demo"]
+
+[leanOptions]
+warningAsError = true
+
+[[lean_lib]]
+name = "GiveAndTake"
+
+[[lean_exe]]
+name = "demo"
+root = "Main"
