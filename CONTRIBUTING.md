@@ -14,7 +14,7 @@ before opening more topics.
 3. Define the model and executable behavior in Lean. Keep IO at the boundary.
 4. State desired properties separately from the implementation. Include rejection
    and failure behavior where relevant.
-5. Explain what the result establishes, what remains open, and how to reproduce it.
+5. Explain what the result establishes and how to reproduce it.
 
 Use English for project documentation and code comments. Conversation and
 discussion can use the participants' preferred language.

@@ -11,6 +11,8 @@ payments, tokenized assets, incentives, and safety.
 - Published notes should state what is being studied and explain the subject
   directly. Keep writing advice, learning methods, project positioning, and
   promises about future work in contributor documentation, not reader-facing prose.
+  End notes when the subject is explained; do not append generic outlook or
+  open-question sections.
 - Use English for repository documentation and code comments; converse with the
   user in their preferred language.
 - Read README.md, CONTRIBUTING.md, and the guide for the case being changed.

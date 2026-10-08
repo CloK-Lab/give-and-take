@@ -138,13 +138,3 @@ proof of `run_preservesFunds` in
 [Verification.lean](https://github.com/CloK-Lab/give-and-take/blob/main/GiveAndTake/PaidCall/Verification.lean).
 That file also checks rejection after a finished call and restoration of the
 initial balances by reserve followed by refund.
-
-## What this leaves open
-
-A provider could receive a settlement without delivering a useful result, and
-the total would still be preserved. Our state records money and phases; it
-contains no service result or evidence of delivery. The proof establishes an
-accounting property, leaving fair exchange as a further question.
-
-The next question is therefore concrete: **what evidence should allow a call to
-settle?** Answering it would require extending both the state and the rules.
