@@ -1,6 +1,6 @@
 # give-and-take
 
-[![Documentation](https://img.shields.io/badge/Documentation-Read-7fb8d1)](docs/README.md)
+[![Documentation](https://img.shields.io/badge/Documentation-Read-7fb8d1)](docs/Overview.mdx)
 
 We study agent protocols, payments, and tokenized assets by building formal
 models, specifications, and executable code in Lean.

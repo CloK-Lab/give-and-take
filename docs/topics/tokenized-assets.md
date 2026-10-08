@@ -1,4 +1,10 @@
-# Tokenized assets
+---
+title: "Tokenized assets"
+description: "Studying RWA claims, backing, and the boundary between ledgers and external facts."
+slug: tokenized-assets
+order: 4
+section: Study topics
+---
 
 Status: reading notes and modeling questions; no asset-backing mechanism yet.
 Sources consulted on 2026-10-08.

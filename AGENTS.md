@@ -17,4 +17,8 @@ payments, tokenized assets, incentives, and safety.
 - Do not introduce admitted proofs, custom axioms, or native evaluation axioms.
   Audit new public theorems in scripts/Audit.lean.
 - Run lake build, lake exe demo, and lake env lean scripts/Audit.lean.
+- Keep case notes beside their Lean source as Note.mdx and use source excerpts
+  instead of copying definitions or proofs. Follow docs/README.md and clok.json.
+- For documentation changes, run npm run build and inspect the affected pages.
+  Preserve the shared CloK documentation format and notebook visual conventions.
 - Keep generated build files, credentials, and local runtime data out of Git.

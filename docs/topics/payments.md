@@ -1,4 +1,10 @@
-# Payments
+---
+title: "Payments"
+description: "Reading x402 and separating payment authorization, delivery, and settlement."
+slug: payments
+order: 3
+section: Study topics
+---
 
 Status: reading notes and one local accounting case; no x402 implementation yet.
 Sources consulted on 2026-10-08.
@@ -15,7 +21,7 @@ different specifications.
 
 ## Current case
 
-[One paid call](../../GiveAndTake/PaidCall/README.md) introduces reservation,
+[One paid call](../../GiveAndTake/PaidCall/Note.mdx) introduces reservation,
 settlement, and refund in abstract accounting units. This is our own small study
 model, not an implementation of x402 or its A2A extension.
 

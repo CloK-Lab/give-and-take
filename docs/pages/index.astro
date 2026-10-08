@@ -1,0 +1,11 @@
+---
+import Shell from '../layouts/Shell.astro';
+import { components } from '../lib/components';
+import { overview, project } from '../lib/notes';
+const { Content, getHeadings } = overview.module;
+const headings = getHeadings().filter(h => h.depth === 2 || h.depth === 3);
+---
+<Shell title="Overview" description={project.description} headings={headings}>
+  <h1>{project.title}</h1>
+  <Content components={components} />
+</Shell>

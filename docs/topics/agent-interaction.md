@@ -1,4 +1,10 @@
-# Agent interaction
+---
+title: "Agent interaction"
+description: "Reading A2A and identifying the meanings of tasks, delegation, and results."
+slug: agent-interaction
+order: 2
+section: Study topics
+---
 
 Status: reading notes and modeling questions; no A2A implementation yet.
 Sources consulted on 2026-10-08.

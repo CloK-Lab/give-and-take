@@ -23,6 +23,11 @@ Keep a case together under `GiveAndTake/<Case>/`. Separate model definitions,
 specifications, execution, and proofs; execution must not import verification.
 Extract shared abstractions when multiple concrete cases need them.
 
+Write the explanation in `GiveAndTake/<Case>/Note.mdx` beside its code. Include
+Lean declarations directly from the source files. Reading notes belong in
+`docs/topics/`; `clok.json` supplies page discovery and project metadata. See the
+[notebook guide](docs/README.md) for authoring and previewing documentation.
+
 A runtime example is evidence about its inputs. A theorem establishes its stated
 property under its hypotheses. Protocol conformance requires an explicit mapping
 to a pinned specification. External services, facts, and non-Lean implementations
@@ -46,3 +51,7 @@ lake env lean scripts/Audit.lean
 
 Keep the toolchain pinned and add dependencies only when a concrete case needs
 them. Update source notes and the README when the implemented scope changes.
+
+For documentation changes, install dependencies once with `npm ci`, then run
+`npm run build`. Inspect changed pages locally with `npm run dev`, including
+navigation, source excerpts, and phone-width layout.

@@ -1,0 +1,111 @@
+We study agent protocols, payments, and tokenized assets by building formal
+models, specifications, and executable code in Lean.
+
+Give and Take is a [CloK](https://www.clok.tech/about) community learning project.
+We work from concrete questions: what does a protocol require, what does an
+implementation do, and how do its rules shape cooperation and incentives?
+
+## Start with one paid call
+
+The first [learning note](../GiveAndTake/PaidCall/Note.mdx) follows a buyer and a
+provider through reservation, settlement, and refund. It develops an accounting
+specification, runs the model, and explains the proofs beside their Lean source.
+
+| State | Buyer available | Provider available | Reserved |
+| --- | --- | --- | --- |
+| Initial | 100 | 20 | 0 |
+| Reserve 30 | 70 | 20 | 30 |
+| Settle | 70 | 50 | 0 |
+
+Refunding instead restores the initial available balances. Both outcomes preserve
+the total of 120 units. The note states exactly what the model establishes and
+which questions need a richer protocol.
+
+## Study topics
+
+These reading notes connect source specifications to questions we can formalize.
+They are starting points for shared study; implementations will grow alongside
+the notes.
+
+- [Agent interaction](./topics/agent-interaction.md): A2A capabilities, tasks,
+  delegation, and results.
+- [Payments](./topics/payments.md): x402, payment authorization, delivery,
+  settlement, and the incentives of paid calls.
+- [Tokenized assets](./topics/tokenized-assets.md): RWA claims, backing, redemption,
+  and the connection between a ledger and external facts.
+
+An internal credit ledger is enough to study many agent interactions. Wallets,
+external payment systems, or a particular chain can enter a model when the
+question requires them.
+
+## Installation
+
+Install Git and follow the [Lean installation guide](https://lean-lang.org/install/)
+to set up Lean and Lake. Then clone the project:
+
+```sh
+git clone https://github.com/CloK-Lab/give-and-take.git
+cd give-and-take
+```
+
+The toolchain is pinned to Lean **4.34.0**. The current model uses only the
+standard library.
+
+## Run locally
+
+### Check and execute the model
+
+From the repository root:
+
+```sh
+lake build
+lake exe demo
+lake env lean scripts/Audit.lean
+```
+
+The build checks the model, proofs, and concrete examples. The demo executes the
+same transition functions used in the proofs. The audit checks the listed
+theorems' axiom dependencies. Open the repository in VS Code with the Lean 4
+extension to work through the source interactively.
+
+### Preview this notebook
+
+With Node.js **22.12 or newer** and npm installed:
+
+```sh
+npm ci
+npm run dev
+```
+
+Open the local URL printed by Astro, normally `http://localhost:4321`. If another
+notebook is already using that port, Astro selects an available one. To choose a
+port explicitly, run `npm run dev -- --port 4322`.
+
+`npm run build` validates the documentation and builds static HTML in `dist/`.
+`npm run preview` serves that build. Lean and the notebook build independently.
+
+## How the project is organized
+
+```text
+GiveAndTake/
+  PaidCall/
+    Note.mdx            # The learning note, with source excerpts
+    Model.lean          # States, actions, and accounting quantities
+    Spec.lean           # Properties to establish
+    Execution.lean      # State transitions and replay
+    Verification.lean   # Proofs about the execution
+    Checks.lean         # Concrete examples
+docs/
+  Overview.mdx          # This page
+  topics/               # Reading notes and modeling questions
+  README.md             # Documentation authoring guide
+clok.json               # Project identity and documentation paths
+```
+
+Notes live beside the case they explain. The renderer imports named definitions
+and theorems from the actual source files, so changing a declaration also changes
+its displayed excerpt. Sources, assumptions, and open questions remain part of
+the written argument.
+
+Read the [contribution guide](https://github.com/CloK-Lab/give-and-take/blob/main/CONTRIBUTING.md)
+to add a question, note, model, counterexample, or proof.

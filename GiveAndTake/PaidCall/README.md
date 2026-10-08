@@ -1,5 +1,7 @@
 # One paid call
 
+Read the [learning note](Note.mdx) for the specification, executable model, and proofs.
+
 This case studies accounting for a single service call between a buyer and a
 provider. Balances are natural numbers in one abstract unit; zero-price calls
 are allowed. A `reserved price` phase records funds unavailable to either party.
