@@ -4,6 +4,7 @@ description: "Studying RWA claims, backing, and the boundary between ledgers and
 slug: tokenized-assets
 order: 4
 section: Study topics
+draft: true
 ---
 
 Status: reading notes and modeling questions; no asset-backing mechanism yet.

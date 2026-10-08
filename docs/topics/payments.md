@@ -4,6 +4,7 @@ description: "Reading x402 and separating payment authorization, delivery, and s
 slug: payments
 order: 3
 section: Study topics
+draft: true
 ---
 
 Status: reading notes and one local accounting case; no x402 implementation yet.

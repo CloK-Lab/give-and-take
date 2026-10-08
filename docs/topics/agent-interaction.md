@@ -4,6 +4,7 @@ description: "Reading A2A and identifying the meanings of tasks, delegation, and
 slug: agent-interaction
 order: 2
 section: Study topics
+draft: true
 ---
 
 Status: reading notes and modeling questions; no A2A implementation yet.

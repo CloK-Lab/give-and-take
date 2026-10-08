@@ -2,7 +2,9 @@
 
 Give and Take grows through shared study. Contributions can start with a precise
 question, a source reading, a model, an executable example, a counterexample, or
-a theorem.
+a theorem. Focus on one question, explain it through a concrete example, and
+keep the change small enough to study together. Improve existing explanations
+before opening more topics.
 
 ## A useful contribution
 

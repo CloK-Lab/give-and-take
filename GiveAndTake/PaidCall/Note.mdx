@@ -1,88 +1,72 @@
 ---
 title: "One paid call"
-description: "A specification, executable accounting model, and conservation proofs for reservation, settlement, and refund."
+description: "Follow one payment, model its states in Lean, and explain why the total stays unchanged."
 slug: paid-call
 order: 1
-section: Models
 ---
 
-A buyer pays an agent for a service. Before considering what the service does,
-we can ask a smaller question: where are the funds while the call is pending,
-and what happens when it is settled or refunded?
+One agent asks another to perform a service for 30 units. We call them the
+**buyer** and the **provider**. While the request is pending, where should those
+30 units be recorded? That is the question for this note.
 
-We model one call between a buyer and a provider. Amounts are natural numbers in
-one abstract accounting unit. Reserving a price makes those funds unavailable
-to either participant until settlement or refund.
+## Follow the money
 
-## State and quantities
+Start with 100 units available to the buyer and 20 to the provider. We introduce
+a reservation: 30 units are set aside for this call, so neither party can spend
+them while payment is pending.
 
-The call begins ready, can hold a reservation, and finishes settled or refunded.
-The reserved phase records the agreed price:
+| Step | Buyer available | Provider available | Reserved | Total |
+| --- | --- | --- | --- | --- |
+| Start | 100 | 20 | 0 | 120 |
+| Reserve 30 | 70 | 20 | 30 | 120 |
+| Then settle | 70 | 50 | 0 | 120 |
+| Or refund instead | 100 | 20 | 0 | 120 |
+
+Settlement transfers the reservation to the provider. Refund returns it to the
+buyer. These are alternative endings to the same reservation.
+
+The total stays at 120, but the available balances alone fall to 90 while the
+call is pending. We therefore need to count reserved funds separately. Here a
+reservation is an entry in our model; no real wallet or custody service is involved.
+Amounts are natural numbers in one common unit, and we assume no fees.
+
+## Represent the state
+
+The four phases record where we are in the call. The `reserved` phase also holds
+the price: the amount to transfer on settlement or return on refund:
 
 ```lean4 file="./Model.lean" declaration="Phase"
 ```
 
-Available balances are stored separately from the reservation:
+A state combines this phase with the two available balances:
 
 ```lean4 file="./Model.lean" declaration="State"
 ```
 
-\begin{definition}[Accounted funds]
-
-For state $s$, let $b(s)$ and $v(s)$ be the buyer's and provider's available
-balances. Let $e(s)$ be the reserved price when the phase is reserved, and zero
-otherwise. Define
-
-$$
-T(s) = b(s) + v(s) + e(s).
-$$
+Keeping the price inside `reserved` means a settled or refunded state cannot
+retain a reservation. The representation expresses this choice directly.
+The function `escrow` reads the reserved amount, returning zero in every other phase:
 
 ```lean4 file="./Model.lean" declaration="escrow"
 ```
 
+Now we can calculate the quantity in the last column of the table:
+
 ```lean4 file="./Model.lean" declaration="totalFunds"
 ```
 
-\end{definition}
+## State the rule, then implement it
 
-The reservation is stored once, inside the phase. This representation cannot
-contain a finished call with a separate nonzero escrow balance.
-
-## Specification
-
-\begin{definition}[Conservation]
-
-A transition from $s$ to $s'$ preserves funds when $T(s')=T(s)$.
+Our specification says that a successful transition must leave this total
+unchanged. It compares two states without saying how to compute the second:
 
 ```lean4 file="./Spec.lean" declaration="PreservesFunds"
 ```
 
-\end{definition}
-
-We also identify the terminal phases, after which this call should accept no
-further accounting action:
-
-```lean4 file="./Spec.lean" declaration="Terminal"
-```
-
-These requirements concern accounting and the call lifecycle. They do not yet
-specify who can authorize an action or what counts as a delivered service.
-
-## Executable transitions
-
-The available actions are reserve, settle, and refund:
-
-```lean4 file="./Model.lean" declaration="Action"
-```
-
-| Current phase | Action | Effect |
-| --- | --- | --- |
-| Ready | Reserve a price within the buyer's balance | Move that amount into the reservation |
-| Reserved | Settle | Transfer the reservation to the provider |
-| Reserved | Refund | Return the reservation to the buyer |
-| Any | Any other action | Reject |
-
-The implementation returns `some next` on success and `none` on rejection:
+The implementation supplies that computation. There are three actions:
+`reserve price`, `settle`, and `refund`. Reservation is allowed only when the
+call is ready and the buyer can afford the price. Settlement and refund each
+require a reservation. Everything else is rejected.
 
 <CodePreview title="Execute one action">
 
@@ -91,64 +75,51 @@ The implementation returns `some next` on success and `none` on rejection:
 
 </CodePreview>
 
-It calculates the new state directly. Fund conservation is proved about this
-function; it is not enforced by checking the desired theorem as a postcondition.
+Read each successful branch against the table. Reservation subtracts from the
+buyer, settlement adds to the provider, and refund adds back to the buyer.
+`some next` returns the resulting state; `none` rejects the action without
+returning a new state. After either ending, the final catch-all branch also
+rejects any attempt to settle the same call again.
 
-The replay function composes those same transitions:
+The balance check matters: subtraction on `Nat` stops at zero. Reserving 130
+from a buyer with 100 without this check would leave buyer 0 and reservation
+130, creating 30 units in the accounting.
+
+## Run the paths
+
+`run` feeds each successful state into the next action. An empty action list
+returns the current state, and a rejected action makes the whole result `none`:
 
 ```lean4 file="./Execution.lean" declaration="run"
 ```
 
-This is a pure interpreter. A rejected action makes the result `none`; that
-behavior does not roll back independently committed effects in another system.
+From the repository root, run:
 
-## Work through an example
-
-Start with buyer balance 100 and provider balance 20. Reserving 30 yields buyer
-70, provider 20, and escrow 30. The next action chooses between two outcomes:
-
-<Tabs labels={["Settle", "Refund"]}>
-<Tab>
-
-```lean4
-run (initial 100 20) [.reserve 30, .settle]
--- some { buyer := 70, provider := 50, phase := .settled }
+```sh
+lake exe demo
 ```
 
-The provider receives the reserved 30. The accounted total remains 120.
+The demo starts at balances 100 and 20. Reserving 30 and settling gives 70 and
+50; reserving 30 and refunding gives 100 and 20. Trying to settle twice returns
+`none`. This is a pure calculation: rejecting a sequence does not undo payments
+already made in some external system.
 
-</Tab>
-<Tab>
+Before trying another example, predict what happens when the buyer reserves
+101 units, or reserves zero. Which branch of `execute` explains each result?
 
-```lean4
-run (initial 100 20) [.reserve 30, .refund]
--- some { buyer := 100, provider := 20, phase := .refunded }
-```
+## Why the total is preserved
 
-The buyer recovers the reserved 30. The balances are restored, while the refunded
-phase records that this call is finished.
+The example checks particular numbers. To cover every accepted action, consider
+each of the three successful branches. Write the balances as $b$ and $v$, and
+the price as $p$:
 
-</Tab>
-</Tabs>
+- Reservation changes the total from $b+v$ to $(b-p)+v+p$. The check $p\le b$
+  ensures subtraction loses exactly $p$, so adding it back restores the total.
+- Settlement changes $b+v+p$ to $b+(v+p)$.
+- Refund changes $b+v+p$ to $(b+p)+v$.
 
-Run `lake exe demo` to see these outcomes. The build-time examples in
-`Checks.lean` also cover insufficient funds, repeated settlement, settlement
-after refund, and a zero-price call.
-
-## Why every successful execution conserves funds
-
-\begin{theorem}[One action]
-
-For every state $s$, action $a$, and resulting state $s'$, if
-`execute s a = some s'`, then $T(s')=T(s)$.
-
-\end{theorem}
-
-\begin{proof}
-
-There are three successful cases. Reservation subtracts a funded price from the
-buyer and places it in escrow. Settlement moves escrow to the provider. Refund
-moves it back to the buyer. Each preserves the sum. All other cases reject.
+All three preserve the sum. The Lean theorem states this for any `before`,
+`action`, and `after`, provided execution actually returns `some after`:
 
 <CodePreview title="Conservation for one action">
 
@@ -157,69 +128,23 @@ moves it back to the buyer. Each preserves the sum. All other cases reject.
 
 </CodePreview>
 
-\end{proof}
+The proof follows the same case split. Simplification removes rejected cases,
+which contradict the `accepted` hypothesis. In the remaining cases, `omega`
+discharges the arithmetic equalities using the balance check where needed.
 
-\begin{theorem}[An action sequence]
+For a successful sequence, apply this argument at every step: the first step
+preserves the total, and so does the remaining sequence. This induction is the
+proof of `run_preservesFunds` in
+[Verification.lean](https://github.com/CloK-Lab/give-and-take/blob/main/GiveAndTake/PaidCall/Verification.lean).
+That file also checks rejection after a finished call and restoration of the
+initial balances by reserve followed by refund.
 
-For every state $s$, finite list of actions $A$, and state $s'$, if
-`run s A = some s'`, then $T(s')=T(s)$.
+## What this leaves open
 
-\end{theorem}
+A provider could receive a settlement without delivering a useful result, and
+the total would still be preserved. Our state records money and phases; it
+contains no service result or evidence of delivery. The proof establishes an
+accounting property, leaving fair exchange as a further question.
 
-\begin{proof}
-
-Induct on the list of actions. The empty list leaves the state unchanged. For
-a nonempty successful list, the first action preserves the total by the
-one-action theorem, and the remaining list preserves it by induction.
-
-<CodePreview title="Conservation for replay">
-
-```lean4 file="./Verification.lean" declaration="run_preservesFunds"
-```
-
-</CodePreview>
-
-\end{proof}
-
-## Terminal states and refunds
-
-The terminal-state theorem quantifies over every possible next action:
-
-<CodePreview title="A finished call rejects further actions">
-
-```lean4 file="./Verification.lean" declaration="terminal_rejects"
-```
-
-</CodePreview>
-
-A funded reservation can also be refunded to restore both initial balances:
-
-<CodePreview title="Reserve followed by refund">
-
-```lean4 file="./Verification.lean" declaration="reserve_refund"
-```
-
-</CodePreview>
-
-This states what happens when refund is executed. It does not promise that
-a participant will choose to refund or that an external scheduler will execute it.
-
-## What to study next
-
-The current model contains one call, no fees, and no external service or wallet.
-It supplies no caller identities, delivery evidence, deadlines, or concurrency.
-The accounting proofs alone therefore establish neither fair exchange nor
-incentive compatibility.
-
-Several extensions lead to distinct questions:
-
-- **Authorization:** who may reserve, settle, or refund?
-- **Delivery:** what evidence should permit settlement?
-- **Nested calls:** can a provider fund another agent while its own payment is reserved?
-- **Strategies:** which decisions maximize each participant's utility, and what
-  can go wrong when those decisions interact?
-
-The [payments topic](../../docs/topics/payments.md) connects these questions to
-x402. The [agent interaction topic](../../docs/topics/agent-interaction.md)
-considers task and delegation semantics. This case is a local model to build
-understanding; protocol conformance remains a separate task.
+The next question is therefore concrete: **what evidence should allow a call to
+settle?** Answering it would require extending both the state and the rules.
