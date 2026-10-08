@@ -8,6 +8,9 @@ payments, tokenized assets, incentives, and safety.
   Start notes with a worked example and explain why each modeling choice matters.
   Keep reader navigation small, leave undeveloped topics as drafts, and avoid
   unnecessary frameworks, checklists, and duplicate explanations.
+- Published notes should state what is being studied and explain the subject
+  directly. Keep writing advice, learning methods, project positioning, and
+  promises about future work in contributor documentation, not reader-facing prose.
 - Use English for repository documentation and code comments; converse with the
   user in their preferred language.
 - Read README.md, CONTRIBUTING.md, and the guide for the case being changed.

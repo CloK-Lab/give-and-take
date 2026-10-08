@@ -1,19 +1,9 @@
 We use Lean to understand how agents call each other's services and pay for them.
 
-We work through one small question at a time: describe it in ordinary language,
-build a formal model and specification, then run the model and examine its
-properties. Each note should explain the choices behind the code.
+## Notes
 
-## Start here
-
-[One paid call](../GiveAndTake/PaidCall/Note.mdx) asks what happens to the money
-between requesting a service and paying its provider. Starting with a payment of
-30 units, we follow reservation, settlement, and refund, then express the rule
-that none of these steps should create or lose funds.
-
-This is our first study. It uses a local ledger, so we can understand the
-accounting before bringing in a network or blockchain. Further protocol topics
-will be added as we work through them.
+[One paid call](../GiveAndTake/PaidCall/Note.mdx): reservation, settlement,
+refund, and conservation of funds.
 
 ## Run the example
 
@@ -26,13 +16,5 @@ lake build
 lake exe demo
 ```
 
-The project pins its Lean version. The build checks the definitions, examples,
-and proofs; the demo runs the settlement and refund paths from the note.
-
-## Study together
-
-A clearer explanation, a question, or a small counterexample is a useful
-contribution. Keep each note focused on something a reader can follow and try.
-See the [contribution guide](https://github.com/CloK-Lab/give-and-take/blob/main/CONTRIBUTING.md)
-and the [notebook guide](https://github.com/CloK-Lab/give-and-take/blob/main/docs/README.md)
-for editing and local preview commands.
+The build checks the definitions, examples, and proofs. The demo runs settlement
+and refund from the same initial balances.
