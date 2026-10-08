@@ -65,6 +65,12 @@ Link between published notes using relative source paths. Use GitHub links for
 repository files that are not notebook pages. Explain assumptions and what a
 result means beside the relevant code.
 
+## Diagrams
+
+Follow the [diagram style](DIAGRAMS.md): editable SVG, isometric module nodes,
+CloK typography, and consistent colors for task interaction, spending authority,
+and settlement. Reuse the approved system diagram and its generation script.
+
 ## Shared documentation format
 
 `clok.json` selects pages; [Overview.mdx](Overview.mdx) is the entry point. The

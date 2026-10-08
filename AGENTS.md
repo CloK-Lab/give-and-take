@@ -13,6 +13,10 @@ payments, tokenized assets, incentives, and safety.
   promises about future work in contributor documentation, not reader-facing prose.
   End notes when the subject is explained; do not append generic outlook or
   open-question sections.
+- State the Lean-native positioning once in the overview introduction. Do not
+  repeat it in note headings, captions, alt text, or introductory filler. Name
+  sections for their subject (for example, "Spending policy", not "In Lean").
+  Preserve actual project names, source filenames, and code syntax.
 - Use English for repository documentation and code comments; converse with the
   user in their preferred language.
 - Read README.md, CONTRIBUTING.md, and the guide for the case being changed.
@@ -30,4 +34,6 @@ payments, tokenized assets, incentives, and safety.
   instead of copying definitions or proofs. Follow docs/README.md and clok.json.
 - For documentation changes, run npm run build and inspect the affected pages.
   Preserve the shared CloK documentation format and notebook visual conventions.
+- Follow docs/DIAGRAMS.md for diagrams. The approved native-system.svg sets the
+  isometric geometry, semantic colors, typography, and connector conventions.
 - Keep generated build files, credentials, and local runtime data out of Git.

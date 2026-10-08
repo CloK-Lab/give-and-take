@@ -1,0 +1,62 @@
+---
+title: "Ethereum and ETH"
+description: "Read Ethereum's execution specification and model native balances in wei."
+slug: preliminaries/ethereum
+order: 2
+section: Preliminaries
+---
+
+A payment of **0.003 ETH** carries an integer value of **3,000,000,000,000,000 wei**.
+Ethereum is the network, ETH is the asset, and wei is its smallest unit:
+1 ETH = $10^{18}$ wei. Both transaction values and native account balances use
+wei. [Ethereum's unit reference](https://ethereum.org/developers/docs/intro-to-ether/)
+describes these denominations.
+
+## In execution-specs
+
+[ethereum/execution-specs](https://github.com/ethereum/execution-specs) is an
+executable Python specification of Ethereum's execution layer, organized by fork.
+At revision `dc6d1a5`,
+[`Account` in state.py](https://github.com/ethereum/execution-specs/blob/dc6d1a55cef60d45dbd5969c8d602610daecf604/src/ethereum/state.py)
+contains a nonce, balance, and code hash. Contract storage is tracked separately.
+
+The Prague
+[`LegacyTransaction` definition](https://github.com/ethereum/execution-specs/blob/dc6d1a55cef60d45dbd5969c8d602610daecf604/src/ethereum/forks/prague/transactions.py)
+separates `value`, `gas`, and `gas_price`. The recipient receives the transfer
+value; gas pays for execution. Sending 0.003 ETH therefore costs the sender
+the value plus the transaction fee.
+
+## Accounts and amounts
+
+Our network identifier uses [CAIP-2](https://standards.chainagnostic.org/CAIPs/caip-2):
+`eip155:1` denotes Ethereum mainnet. Native ETH uses the
+[CAIP-19](https://standards.chainagnostic.org/CAIPs/caip-19) asset reference
+`eip155:1/slip44:60`.
+
+```lean4 file="./Model.lean" declaration="ether"
+```
+
+`Amount asset` stores `units : Nat`, attaching an integer quantity to a
+particular asset. For `Wei`, every unit belongs to native ETH on this network:
+
+```lean4 file="./Model.lean" declaration="Wei"
+```
+
+The conversion uses integer arithmetic, so a small payment does not require
+floating-point numbers.
+
+```lean4 file="./Model.lean" declaration="milliEther"
+```
+
+The account projection retains the nonce and native balance:
+
+```lean4 file="./Model.lean" declaration="Account"
+```
+
+`milliEther 3` evaluates to 3,000,000,000,000,000 wei; `milliEther 1000` to one ETH.
+The build checks both conversions. `Nat` gives mathematical nonnegative amounts;
+this projection omits the upstream `U256` bound, code, storage, and transaction
+execution. Network and address strings are treated as already validated inputs.
+
+[EVMYulLean](https://github.com/NethermindEth/EVMYulLean/tree/047f63070309f436b66c61e276ab3b6d1169265a)
+models EVM and Yul machine execution, including machine state and operations.

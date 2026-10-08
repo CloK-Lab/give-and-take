@@ -5,7 +5,7 @@
     "slug": "give-and-take",
     "title": "Give and take",
     "category": "Learning agent protocols",
-    "description": "Studying agent protocols, payments, and tokenized assets through formal models, specifications, and executable code in Lean."
+    "description": "Formal models, specifications, and executable code in Lean for decentralized agent economies: task delegation, token transfers, and on-chain payments."
   },
   "docs": {
     "format": "mdx",

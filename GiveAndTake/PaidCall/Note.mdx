@@ -1,8 +1,9 @@
 ---
 title: "One paid call"
-description: "Follow one payment, model its states in Lean, and explain why the total stays unchanged."
+description: "Follow reservation, settlement, and refund, and explain why the total stays unchanged."
 slug: paid-call
-order: 1
+order: 8
+section: Examples
 ---
 
 One agent asks another to perform a service for 30 units. We call them the
@@ -118,7 +119,7 @@ the price as $p$:
 - Settlement changes $b+v+p$ to $b+(v+p)$.
 - Refund changes $b+v+p$ to $(b+p)+v$.
 
-All three preserve the sum. The Lean theorem states this for any `before`,
+All three preserve the sum. The theorem states this for any `before`,
 `action`, and `after`, provided execution actually returns `some after`:
 
 <CodePreview title="Conservation for one action">

@@ -1,13 +1,34 @@
-We use Lean to understand how agents call each other's services and pay for them.
+We study decentralized agent economies through formal models, specifications,
+and executable code in [Lean4](https://lean-lang.org/) natively.
 
-## Notes
+## Preliminaries
 
-[One paid call](../GiveAndTake/PaidCall/Note.mdx): reservation, settlement,
-refund, and conservation of funds.
+The environment for an on-chain agent economy: networks and accounts, assets
+and units, spending authority, service payments, and agent interaction.
+
+- [Modules and interactions](../GiveAndTake/System/Note.mdx): an overview of the
+  environment and the relationships between its parts.
+- [Ethereum and ETH](../GiveAndTake/Preliminaries/Ethereum/Note.mdx): execution-specs,
+  account balances, and wei.
+- [ERC-20 tokens](../GiveAndTake/Preliminaries/ERC20/Note.mdx): OpenZeppelin's token
+  ledger, units, and transfers.
+- [Wallet authority](../GiveAndTake/Preliminaries/Wallet/Note.mdx): PASS's wallet
+  model and a concrete spending policy.
+- [x402 payments](../GiveAndTake/Preliminaries/X402/Note.mdx): payment options,
+  asset amounts, and the distinction between authorization and settlement.
+- [A2A interfaces](../GiveAndTake/Preliminaries/A2A/Note.mdx): Agent Cards, skills,
+  interfaces, and task states.
+
+## Examples
+
+- [A paid task](../GiveAndTake/PaidTask/Note.mdx): authorize a payment of 0.003 ETH,
+  update balances in wei, and return an echo result.
+- [One paid call](../GiveAndTake/PaidCall/Note.mdx): reservation, settlement,
+  refund, and conservation of funds.
 
 ## Run the example
 
-With [Lean and Lake installed](https://lean-lang.org/install/):
+[Install the toolchain](https://lean-lang.org/install/), then run:
 
 ```sh
 git clone https://github.com/CloK-Lab/give-and-take.git
@@ -16,5 +37,5 @@ lake build
 lake exe demo
 ```
 
-The build checks the definitions, examples, and proofs. The demo runs settlement
-and refund from the same initial balances.
+The build checks the definitions, examples, and proofs. The demo runs both a
+reservation with settlement or refund, and a payment followed by an echo task.
