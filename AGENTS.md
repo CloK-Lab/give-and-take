@@ -1,4 +1,4 @@
-# Working on Give and Take
+# Working on Give and take
 
 This is a CloK learning and research project. Its purpose is to build formal
 models, specifications, and executable code in Lean for studying agent protocols,

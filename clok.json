@@ -3,7 +3,7 @@
   "schemaVersion": 1,
   "project": {
     "slug": "give-and-take",
-    "title": "Give and Take",
+    "title": "Give and take",
     "category": "Learning agent protocols",
     "description": "Studying agent protocols, payments, and tokenized assets through formal models, specifications, and executable code in Lean."
   },
