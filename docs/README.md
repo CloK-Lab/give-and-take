@@ -72,6 +72,10 @@ renderer and styling follow
 [`same-but-better`](https://github.com/CloK-Lab/same-but-better/tree/6891ef09fa04860573561909c02841e156bf852c),
 adapted under Apache-2.0. The notebook builds independently of other repositories.
 
-The [CloK documentation protocol](CLOK_PROTOCOL.md) records the supported format
-and publication process. Publishing to CloK is separate from local preview;
-pushing a commit alone does not publish the notebook.
+Read the notebook on [CloK](https://www.clok.tech/docs/give-and-take), where the
+main website supplies the navbar. The local Astro preview shows the document body.
+
+The shared `Sync project documentation` workflow checks registered projects hourly
+and proposes updates after their CI passes. Website checks and the deployment
+preview must pass before the publication PR is merged. See the
+[CloK documentation protocol](CLOK_PROTOCOL.md) for the full contract.
