@@ -1,16 +1,16 @@
-"""Energy supports a human-agent network with allocation and renewal mechanisms."""
+"""A human-agent workshop builds and improves verified infrastructure."""
 from pathlib import Path
 from base64 import b64encode
 from html import escape
-from math import atan2, degrees, hypot
+from math import atan2, cos, degrees, hypot, pi, sin
 from xml.etree import ElementTree
 
 ROOT = Path(__file__).resolve().parents[1]
 BLUE, PURPLE, GOLD = '#86b9d5', '#b6a4c9', '#c6ad79'
 INK, MUTED, RULE = '#dfebf4', '#9fa6b2', '#303b47'
-parts = ['''<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="630" viewBox="0 0 1080 630" role="img" aria-labelledby="title description">
-<title id="title">DSI on Chain and mathematically verified infrastructure</title>
-<desc id="description">A conceptual network of six human-agent pairs: each outer cube carries a human and an agent icon and connects by a short chain to its nearest wallet in a smaller gold hexagon. A blue flame represents energy at the center. The interior has no arrows or labels. To the right, Mathematically verified infra groups four illustrations in a two-by-two grid: Hardware, a chip and circuit board; Compute, a server cluster; Software, a code editor; and Science, an experiment and observation sheet. Two arrows labeled Improve connect the network and infrastructure as whole groups in opposite directions. Superintelligence and mathematical verification describe the research goals, not achieved capabilities. Feedback represents maintenance and upgrades, not the recovery of consumed energy or proof of empirical truth.</desc>
+parts = ['''<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="920" viewBox="0 0 1080 920" role="img" aria-labelledby="title description">
+<title id="title">Verified Infrastructure and DSI Network</title>
+<desc id="description">Verified Infrastructure surrounds a human-agent workshop. Hardware, Compute, Software, and Science occupy four workstations. Short production benches carry workpieces between the stations and the central network, with jointed tool arms suggesting fabrication, verification, and improvement. Six human-agent cubes form the outer hexagon, six connected wallet cubes form the inner hexagon, and a blue energy flame sits at the center. Each wallet links to its nearest human-agent pair. Gold denotes allocation inside the network; blue denotes production and infrastructure. The illustration describes research goals rather than achieved capabilities or a literal automated factory.</desc>
 ''']
 fonts, licenses = [], []
 for package, family in [('jost', 'Jost'), ('ibm-plex-mono', 'Plex')]:
@@ -28,7 +28,7 @@ text{font-family:Jost,sans-serif;font-weight:400}
 ''']
 for name, color in [('blue', BLUE), ('purple', PURPLE), ('gold', GOLD), ('ink', INK)]:
     parts.append(f'<marker id="{name}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M2 1 L8 5 L2 9" fill="none" stroke="{color}" stroke-width="1.4"/></marker>')
-parts.append('</defs><rect width="1080" height="630" fill="#0a0a0f"/>')
+parts.append('</defs><rect width="1080" height="920" fill="#0a0a0f"/>')
 
 
 def text(x, y, label, size=24, color=INK, anchor='middle', mono=False):
@@ -46,12 +46,12 @@ def rect(x, y, w, h, fill='none', stroke=RULE, radius=4):
     parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{radius}" fill="{fill}" stroke="{stroke}"/>')
 
 
-def flame(x, y):
+def flame(x, y, scale=4):
     # Lucide's flame outline; see docs/DIAGRAMS.md for source and license.
     icon = ElementTree.parse(ROOT / 'tools/assets/lucide-flame.svg').getroot()
-    parts.append(f'<g transform="translate({x - 48} {y - 50}) scale(4)">')
+    parts.append(f'<g transform="translate({x - 12 * scale} {y - 12 * scale}) scale({scale})">')
     for shape in icon.findall('{http://www.w3.org/2000/svg}path'):
-        line(shape.attrib['d'], BLUE, .5)
+        line(shape.attrib['d'], BLUE, 1.8 / scale)
     parts.append('</g>')
 
 
@@ -105,9 +105,9 @@ def chain(x1, y1, x2, y2):
     parts.append('</g>')
 
 
-def wallet(x, y):
+def wallet(x, y, scale=.65):
     # Reuse the system diagram's wallet geometry at a smaller scale.
-    parts.append(f'<g transform="translate({x} {y}) scale(.4)">')
+    parts.append(f'<g transform="translate({x} {y}) scale({scale})">')
     line('M0 -55 L50 -27 L0 1 L-50 -27 Z', GOLD, 3, fill='#3b3220')
     line('M-50 -27 L0 1 V58 L-50 30 Z', GOLD, 3, fill='#211c13')
     line('M0 1 L50 -27 V30 L0 58 Z', GOLD, 3, fill='#2d2518')
@@ -170,55 +170,118 @@ def software(x, y, scale=.78):
     parts.append('</g>')
 
 
+def hexagon(cx, cy, radius, color):
+    points = [(cx + radius * cos(-pi / 2 + i * pi / 3),
+               cy + radius * sin(-pi / 2 + i * pi / 3)) for i in range(6)]
+    d = 'M' + ' L'.join(f'{x:.2f} {y:.2f}' for x, y in points) + ' Z'
+    line(d, color, 1.8)
+    return points
+
+
+def workpiece(x, y, finished=False):
+    # The same small workpiece appears in outline and then on the tooling bed.
+    edge = BLUE if finished else '#658394'
+    line(f'M{x} {y-10} L{x+11} {y-4} L{x} {y+2} L{x-11} {y-4} Z',
+         edge, 1.2, fill='#274454' if finished else '#101820')
+    line(f'M{x-11} {y-4} V{y+6} L{x} {y+12} V{y+2} M{x} {y+12} L{x+11} {y+6} V{y-4}',
+         edge, 1.2, fill='#152936' if finished else '#101820')
+    if finished:
+        line(f'M{x+3} {y+4} l2 1 l4 -6', INK, 1.2)
+
+
+def production_bench(x1, y1, x2, y2):
+    # A shallow mechanical bed replaces the former floating connector curve.
+    dx, dy = x2-x1, y2-y1
+    length = hypot(dx, dy)
+    ux, uy = dx/length, dy/length
+    nx, ny = -uy*15, ux*15
+    corners = [(x1+nx,y1+ny), (x2+nx,y2+ny),
+               (x2-nx,y2-ny), (x1-nx,y1-ny)]
+    d = 'M' + ' L'.join(f'{x:.2f} {y:.2f}' for x,y in corners) + ' Z'
+    line(d, '#496575', 1.3, fill='#13212c')
+    # The lower edge gives the workbench a visible thickness.
+    low = sorted(corners, key=lambda p:p[1], reverse=True)[:2]
+    (ax,ay),(bx,by) = low
+    line(f'M{ax} {ay} L{ax} {ay+7} L{bx} {by+7} L{bx} {by}',
+         '#3c5263', 1.1, fill='#0d161e')
+    for fraction in [.12,.24,.36,.48,.60,.72,.84]:
+        x,y=x1+dx*fraction,y1+dy*fraction
+        line(f'M{x+nx*.65} {y+ny*.65} L{x-nx*.65} {y-ny*.65}',
+             '#304958', .9)
+
+
+def tooling(x1, y1, x2, y2):
+    dx,dy=x2-x1,y2-y1
+    bx,by=x1+dx*.27,y1+dy*.27
+    jx,jy=x1+dx*.61,y1+dy*.61
+    sign=1 if dx>0 else -1
+    ex,ey=bx+sign*6,by-43
+    wx,wy=jx-sign*22,jy-36
+    tx,ty=jx,jy-16
+    workpiece(x1+dx*.12,y1+dy*.12)
+    workpiece(jx,jy,finished=True)
+    # A compact jointed tool arm makes the construction relation visible.
+    line(f'M{bx-9} {by} L{bx} {by-5} L{bx+9} {by} L{bx} {by+5} Z',
+         BLUE,1.2,fill='#1a2c39')
+    arm=f'M{bx} {by-3} L{ex} {ey} L{wx} {wy} L{tx} {ty}'
+    line(arm,'#769db4',7)
+    line(arm,'#1b2c38',3.5)
+    for x,y in [(ex,ey),(wx,wy)]:
+        parts.append(f'<circle cx="{x}" cy="{y}" r="4.5" fill="#111d27" stroke="{BLUE}" stroke-width="1.4"/>')
+    line(f'M{tx} {ty} l-6 8 v6 M{tx} {ty} l6 8 v6',BLUE,1.6)
+
+
 for compact in [False, True]:
     parts.append(f'<g class="{"compact" if compact else "wide"}">')
-    # Move the unchanged network left to give both grid columns enough room.
-    parts.append('<g transform="translate(-100 0)">')
-    text(350, 75, 'DSI on Chain', 44 if compact else 36)
+    text(540, 56, 'Verified Infrastructure', 44 if compact else 36)
 
-    # Two concentric networks, with only a flame at their shared center.
-    line('M350 160 L520 255 V450 L350 550 L180 450 V255 Z', '#675776', 1.8)
-    line('M350 242 L449 297 V410 L350 468 L251 410 V297 Z', '#806e4c', 1.5)
-    for endpoints in [
-        (350, 199, 350, 216),
-        (489, 274, 472, 284),
-        (489, 433, 472, 423),
-        (350, 495, 350, 515),
-        (211, 433, 228, 423),
-        (211, 274, 228, 284),
-    ]:
-        chain(*endpoints)
-    for x, y in [(350,242), (449,297), (449,410), (350,468), (251,410), (251,297)]:
-        wallet(x, y)
-    flame(350, 355)
-    for x, y in [(350,160), (520,255), (520,450), (350,550), (180,450), (180,255)]:
-        peer(x, y)
-    parts.append('</g>')
+    # One workshop, with four aligned output stations and short fabrication beds.
+    routes=[(462.06,341,266,228), (617.94,341,814,228),
+            (462.06,611,266,724), (617.94,611,814,724)]
+    for route in routes:
+        production_bench(*route)
 
-    # Brackets attach the two relations to whole groups, never individual nodes.
-    line('M463 128 H478 V592 H463', '#675776', 1.3)
-    line('M613 128 H598 V592 H613', '#496171', 1.3)
-    line('M490 327 H586', INK, 1.8, arrow='ink')
-    text(538, 307, 'Improve', 30 if compact else 24)
-    line('M586 402 H490', BLUE, 1.8, arrow='blue')
-    text(538, 441, 'Improve', 30 if compact else 24, BLUE)
+    # The faint platform anchors the human-agent network in the workshop.
+    line('M540 296 L695.88 386 V566 L540 656 L384.12 566 V386 Z',
+         '#453d52',1.2,fill='#111017')
+    line('M384.12 566 V574 L540 664 L695.88 574 V566 M540 656 V664',
+         '#453d52',1.2,fill='#0e0d13')
 
-    # Four equal cells: physical designs, compute, software, and scientific work.
-    text(835, 51, 'Mathematically', 40 if compact else 32)
-    text(835, 95, 'verified infra', 40 if compact else 32)
-    for cell_x in [625, 845]:
-        for cell_y in [128, 378]:
-            rect(cell_x, cell_y, 200, 210, '#0d1118', '#263440', 6)
-    hardware(725, 225)
-    parts.append('<g transform="translate(853.55 -95) scale(.62)">')
+    cell_width = 256 if compact else 236
+    for cx in [162,918]:
+        for y in [118,586]:
+            rect(cx-cell_width/2,y,cell_width,248,'#0d1118','#263440',6)
+    hardware(162,222)
+    cluster_scale=.77 if compact else .71
+    parts.append(f'<g transform="translate({918-147.5*cluster_scale} {226-496*cluster_scale}) scale({cluster_scale})">')
     cluster()
     parts.append('</g>')
-    software(725, 459)
-    science(945, 459)
-    for x, y, label in [(725,318,'Hardware'), (945,318,'Compute'),
-                        (725,568,'Software'), (945,568,'Science')]:
-        text(x, y, label, 38 if compact else 30)
+    software(162,690,.94 if compact else .84)
+    science(918,690,.96 if compact else .88)
+    for x,y,label in [(162,338,'Hardware'),(918,338,'Compute'),
+                       (162,806,'Software'),(918,806,'Science')]:
+        text(x,y,label,44 if compact else 34)
+    for route in routes:
+        tooling(*route)
 
+    peers=hexagon(540,476,180,'#675776')
+    wallets=hexagon(540,476,103,'#806e4c')
+    for (px,py),(wx,wy) in zip(peers,wallets):
+        length=hypot(px-wx,py-wy)
+        ux,uy=(px-wx)/length,(py-wy)/length
+        chain(wx+ux*27,wy+uy*27,px-ux*37,py-uy*37)
+    for x,y in wallets:
+        wallet(x,y,.4)
+    for x,y in peers:
+        peer(x,y)
+    text(540,225,'DSI Network',42 if compact else 34)
+    flame(540,476,3)
+
+    # Allocation stays in the wallet ring; the external benches show production.
+    line('M192 877 H224',GOLD,2)
+    text(238,885,'Allocation',30 if compact else 25,GOLD,anchor='start')
+    line('M490 877 H522',BLUE,2)
+    text(536,885,'Build · verify · improve',30 if compact else 25,BLUE,anchor='start')
     parts.append('</g>')
 parts.append('</svg>\n')
 (ROOT / 'docs/assets/economy-overview.svg').write_text(''.join(parts))

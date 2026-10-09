@@ -66,34 +66,39 @@ The homepage uses [`economy-overview.svg`](assets/economy-overview.svg), generat
 by [`tools/draw-economy-overview.py`](../tools/draw-economy-overview.py), for the
 project's conceptual scope. Energy belongs inside a connected human–agent
 network, with wallets supporting resource allocation. Use the heading
-"DSI on Chain" for this proposed system. Expand DSI as decentralized
+"DSI Network" for this proposed system. Expand DSI as decentralized
 superintelligence in the preceding paragraph and explain the project's intended
-human–agent collaboration, on-chain allocation, and improvement loop. Each outer
-purple cube contains both a human glyph and an agent glyph, one on each visible
-face. Inside it, use a smaller concentric hexagon of six gold wallet cubes and
-a single blue flame at the center. Connect each pair to its nearest wallet with
-two small chain links that stop short of both cube faces. The interior contains
-no arrows, text, or panel. Plain hexagon edges connect the nodes; draw them
-behind the cubes and leave space between the two rings.
-Wallet glyphs identify allocation infrastructure without specifying a chain or
-claiming that wallets alone determine an allocation rule. Output and feedback
-arrows remain outside the outer hexagon.
+human–agent collaboration, on-chain allocation, and improvement loop.
 
-Under "Mathematically verified infra", use four equal cells in a 2×2 grid.
-The first row is Hardware (a chip and circuit board) and Compute (the existing
-server cluster); the second is Software (a code window) and Science (an
-experiment). Hardware emphasizes physical designs; Compute emphasizes their
-use for computation. Keep the illustrations distinct, with aligned label
-baselines and matching cell padding. Use facing brackets of equal height to
-group the entire network and the four infrastructure areas. Between them, use two short,
-parallel arrows: "Improve" points to the outputs and "Improve" points back to
-the network for maintenance and upgrades. Do not connect individual people or
-agents to particular outputs, or branch a feedback line from each output. Keep
-the two arrows outside the network and leave the rest of the canvas free of
-connectors. Protocol and token details belong in the notes.
+The current local layout places four infrastructure areas around two concentric
+hexagons. Hardware and Compute sit above; Software and Science sit below. The
+outer purple hexagon has six human–agent cubes, each carrying a human glyph and
+an agent glyph on its visible faces. The inner gold hexagon has six wallet cubes
+connected by plain edges. Link each wallet to its nearest human–agent pair with
+two short chain links, leaving space before both cube faces. Place the blue
+energy flame at the shared center and "DSI Network" above the rings.
+
+Title the surrounding areas "Verified Infrastructure". Replace floating
+external connectors with short blue fabrication benches: shallow isometric beds,
+a small workpiece, and a jointed tool arm. These attach the four infrastructure
+stations to the network as a whole and suggest building, verifying, and improving
+its infrastructure. They are a conceptual production scene, not literal physical
+assembly lines for software or science. Draw the benches behind the panels and
+network, with no arrows or crossing routes.
+
+Gold remains inside the wallet ring and denotes allocation. Keep all six wallets
+connected in a smaller hexagon and linked to their nearest human–agent pair.
+The two short keys distinguish "Allocation" from "Build · verify · improve".
+Wallets represent payment and spending capabilities within an allocation
+mechanism; they do not specify a particular chain or a complete allocation rule.
+
+Keep the four infrastructure panels equal and their illustrations distinct:
+Hardware is a chip and circuit board, Compute a server cluster, Software a code
+window, and Science an experiment. Align label baselines and padding. Compact
+rendering widens the panels and enlarges their artwork and labels.
 
 "Superintelligence" describes the project's intended direction, not a claim of
-achieved capability. "Mathematically verified" states the research goal: specified properties of
+achieved capability. "Verified Infrastructure" states the research goal: specified properties of
 scientific models, hardware designs, computations, and software. It is not a certification of
 existing outputs, a proof of empirical truth, or an AI-safety guarantee. Digital
 records support an allocation mechanism; a record alone does not determine a
