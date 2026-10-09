@@ -69,12 +69,40 @@ def rack(x, y):
     parts.append('</g></g>')
 
 
-def cluster():
-    line('M27 513 L125 462 L268 537 L167 593 Z', '#3f5c70', 1, fill='#0e1720')
-    line('M27 513 V522 L167 602 L268 546 V537 M167 593 V602', '#3f5c70', 1)
-    racks = [(95 + 47*c - 47*r, 429 + 24*c + 24*r) for r in range(2) for c in range(3)]
-    for x, y in sorted(racks, key=lambda pos: pos[1]):
-        rack(x, y)
+def cluster(x, y, scale):
+    # Rack footprints and platform share the same isometric ground plane.
+    slope, spacing, margin = 13 / 25, 47, 12
+    half_side = 12.5  # Projects to the rack's 50-by-26 diamond footprint.
+    low = -half_side - margin
+    high_u = 2 * spacing + half_side + margin
+    high_v = spacing + half_side + margin
+
+    def project(u, v):
+        return u - v, slope * (u + v)
+
+    back, right, front, left = [project(u, v) for u, v in
+        [(low, low), (high_u, low), (high_u, high_v), (low, high_v)]]
+    thickness = 9
+    # Include the rack roofs and platform thickness when centering the artwork.
+    center_x = (left[0] + right[0]) / 2
+    center_y = (-85 + front[1] + thickness) / 2
+    parts.append(f'<g transform="translate({x} {y}) scale({scale}) translate({-center_x} {-center_y})">')
+
+    def polygon(points, fill):
+        line('M' + ' L'.join(f'{px:.2f} {py:.2f}' for px, py in points) + ' Z',
+             '#3f5c70', 1, fill=fill)
+
+    lower_left = (left[0], left[1] + thickness)
+    lower_front = (front[0], front[1] + thickness)
+    lower_right = (right[0], right[1] + thickness)
+    polygon([left, front, lower_front, lower_left], '#0b131b')
+    polygon([front, right, lower_right, lower_front], '#101c26')
+    polygon([back, right, front, left], '#0e1720')
+    footprints = [project(c * spacing, r * spacing)
+                  for r in range(2) for c in range(3)]
+    for px, py in sorted(footprints, key=lambda pos: pos[1]):
+        rack(px, py - 45)
+    parts.append('</g>')
 
 
 def peer(x, y):
@@ -252,10 +280,7 @@ for compact in [False, True]:
         for y in [118,586]:
             rect(cx-cell_width/2,y,cell_width,248,'#0d1118','#263440',6)
     hardware(162,222)
-    cluster_scale=.77 if compact else .71
-    parts.append(f'<g transform="translate({918-147.5*cluster_scale} {226-496*cluster_scale}) scale({cluster_scale})">')
-    cluster()
-    parts.append('</g>')
+    cluster(918,226,.77 if compact else .71)
     software(162,690,.94 if compact else .84)
     science(918,690,.96 if compact else .88)
     for x,y,label in [(162,338,'Hardware'),(918,338,'Compute'),

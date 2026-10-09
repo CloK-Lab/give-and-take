@@ -6,9 +6,12 @@ order: 6
 section: Preliminaries
 ---
 
-A service asks for `"10000"` base units of a specified token on `eip155:84532`.
-The number alone does not tell us what is being paid: the network, asset,
-recipient, and payment scheme are all part of the requirement.
+A service asks for 0.01 USDC per request. In the example below, the payment
+requirement names the Base Sepolia USDC token on `eip155:84532` and encodes the
+amount as `"10000"` integer base units. This is testnet USDC with no dollar
+redemption value. The [stablecoin discussion](../ERC20/Note.mdx#stablecoin-payments)
+explains pricing and units; the payment protocol specifies how to request,
+authorize, and settle the transfer.
 
 The [wallet's authorization policy](../Wallet/Note.mdx) decides whether spending
 is allowed; the payment protocol coordinates the exchange between client and

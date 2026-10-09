@@ -1,18 +1,99 @@
 ---
 title: "Assets and tokens"
-description: "Asset identity, token balances, and transfers, using ERC-20 and OpenZeppelin Contracts."
+description: "Stablecoin pricing and payments, asset identity, and token transfers, using USDC and ERC-20 as references."
 slug: preliminaries/erc20
 order: 4
 section: Preliminaries
 ---
 
-Alice holds 100 base units of an ERC-20 token and transfers 30 to Bob. The token contract
-records 70 for Alice and 30 for Bob. These numbers belong to that token's ledger;
-they are not the ETH balances of Alice and Bob.
+Alice gives an agent a budget of 10 USDC. A provider charges 0.01 USDC per
+request, so the budget covers 1,000 requests before fees. After one payment,
+Alice has 9.99 USDC and the provider has received 0.01 USDC.
+
+## Stablecoin payments
+
+A stablecoin targets the value of a reference asset, often a currency such as
+the US dollar. This gives a service market a way to quote work, set budgets,
+and compare costs in a shared unit. The peg depends on the coin's design:
+reserve-backed coins rely on an issuer and redemption arrangements;
+crypto-collateralized designs use collateral and protocol rules.
+[Ethereum's stablecoin overview](https://ethereum.org/stablecoins/).
+
+[USDC](https://developers.circle.com/stablecoins/what-is-usdc) is Circle's
+dollar-backed example. Its EVM representation implements ERC-20; the standard
+specifies balance, transfer, and allowance interfaces. Price stability requires
+additional economic arrangements beyond that interface.
+[ERC-20 specification](https://eips.ethereum.org/EIPS/eip-20).
+
+### Price, amount, and fees
+
+USDC uses six decimal places in the
+[Circle contract example](https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/test/helpers/storageSlots.behavior.ts).
+The service payment therefore carries an integer amount:
+
+$$
+0.01\ \mathrm{USDC} = 10{,}000\ \text{base units}.
+$$
+
+| Quantity | In this example |
+| --- | --- |
+| Service price | 0.01 USDC per request |
+| Transfer amount | 10,000 base units of the selected USDC token |
+| USD value | Depends on the USDC/USD exchange rate |
+| Chain fee | Accounted separately in the chain's fee asset |
+
+On Ethereum, transaction gas is paid in ETH; on Solana, transaction fees are
+paid in SOL. The fee payer may differ from the customer. The
+[payment protocol example](../X402/Note.mdx) uses a facilitator to submit a
+token transfer and pay its gas. The
+[chain notes](../Ethereum/Note.mdx) describe the two fee systems.
+
+A quote fixed at 0.01 USDC stays fixed in USDC if its dollar price moves. A quote
+fixed at 0.01 USD instead needs an exchange-rate source, a rounding rule, and a
+validity period to determine the token amount. The same distinction applies
+when comparing service revenue with electricity or hardware costs.
+
+### Reserves and redemption
+
+Circle describes USDC as backed by cash and cash-equivalent reserves and
+publishes reserve disclosures and attestations. Direct conversion through
+Circle Mint is available to eligible businesses. Token transfers update the
+on-chain ledger; redemption also depends on the issuer and its banking process.
+[USDC overview](https://developers.circle.com/stablecoins/what-is-usdc),
+[reserve disclosures](https://www.circle.com/transparency).
+
+Circle's EVM contract assigns roles for minting, burning, pausing transfers,
+and blocking addresses. An ordinary transfer preserves total supply, while
+minting and burning change it. Sufficient balance alone does not establish
+that a transfer is permitted by this contract.
+[FiatToken design at `fc85788`](https://github.com/circlefin/stablecoin-evm/blob/fc85788bc7c23cefe3df1a757133048bfddadeaa/doc/tokendesign.md).
+
+A proof about balance updates cannot establish the value or availability of
+external reserves, redemption access, or a market price of exactly one dollar.
+These are separate assumptions when using a stablecoin in an economic model.
+
+### Asset identity across chains
+
+The name USDC does not identify a unique on-chain balance. Payment terms must
+select the network and token contract or mint. Circle lists separate
+[USDC addresses](https://developers.circle.com/stablecoins/usdc-contract-addresses)
+for each supported network. Bridged representations also depend on the bridge
+and the assets it holds; they must be distinguished from issuer-native USDC.
+[Native and bridged USDC](https://www.circle.com/bridged-usdc).
+
+The sources in this section were checked on 8 October 2026. The payment example
+in these notes uses Base Sepolia testnet USDC for development, with no dollar
+redemption value.
+
+## ERC-20 transfers
+
+To isolate the balance update, take a token with 100 base units held by Alice.
+She transfers 30 to Bob. The token contract records 70 for Alice and 30 for Bob.
+This small arithmetic example uses a local token fixture, not deployed USDC.
 
 ![A transfer of 30 token base units changes Alice's balance from 100 to 70 and Bob's from 0 to 30. Total supply stays at 100.](../../../docs/assets/token-transfer.svg)
 
-## In OpenZeppelin Contracts
+### In OpenZeppelin Contracts
 
 [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts)
 provides Solidity implementations of common contract standards. Its
@@ -30,7 +111,7 @@ other branches.
 can override the value. The [ERC-20 standard](https://eips.ethereum.org/EIPS/eip-20)
 also defines `approve`, `allowance`, and `transferFrom` for delegated spending.
 
-## Token balances and transfers
+### Token balances and transfers
 
 A token is identified by its network and contract address. Decimal metadata
 does not change that identity.
@@ -64,4 +145,5 @@ and self-transfer. The example contract address is a local fixture.
 This model uses unbounded `Nat` balances and assumes valid, normalized address
 strings. It selects balance updates from the contract; it does not implement
 `uint256` bounds, event logs, allowances, minting, or burning. ETH gas accounting
-is separate from this token ledger.
+is separate from this token ledger. Issuer controls, reserves, and redemption
+are also outside this ordinary-transfer model.
