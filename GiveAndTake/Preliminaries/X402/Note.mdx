@@ -1,6 +1,6 @@
 ---
-title: "x402 payments"
-description: "Read x402's payment types and distinguish requirements from settlement."
+title: "Payment protocols"
+description: "Payment requirements, verification, and settlement, using x402 as a reference."
 slug: preliminaries/x402
 order: 6
 section: Preliminaries
@@ -10,10 +10,14 @@ A service asks for `"10000"` base units of a specified token on `eip155:84532`.
 The number alone does not tell us what is being paid: the network, asset,
 recipient, and payment scheme are all part of the requirement.
 
+The [wallet's authorization policy](../Wallet/Note.mdx) decides whether spending
+is allowed; the payment protocol coordinates the exchange between client and
+service.
+
 ## In x402
 
-[x402](https://github.com/x402-foundation/x402) defines payment exchange for access
-to resources. At revision `7f2b2f1`, the SDK's
+[x402](https://github.com/x402-foundation/x402) defines payment exchange over HTTP
+for access to resources. At revision `7f2b2f1`, the SDK's
 [`payments.ts`](https://github.com/x402-foundation/x402/blob/7f2b2f1f77fa5317615735e3378a6fad41cccb4e/typescript/packages/core/src/types/payments.ts)
 defines three related objects:
 
@@ -50,7 +54,7 @@ This example copies the core values from the upstream EIP-3009 example:
 `amountUnits exampleRequirements` returns `some 10000`; `"0.01"`, `"-1"`, and
 `"invalid"` are rejected by the integer decoder. Turning base units into a display
 amount requires the token's decimal metadata, as in the
-[ERC-20 note](../ERC20/Note.mdx).
+[assets and tokens note](../ERC20/Note.mdx).
 
 Decoding requirements does not verify a payment. In the upstream EIP-3009 flow,
 verification checks the signature and authorized transfer parameters; settlement

@@ -147,3 +147,8 @@ button { font: inherit; background: none; }
   .docs-sidebar nav > div { display: contents; }
   .notebook-nav-section { flex-basis: 100%; margin: .25rem 0 -.5rem; }
 }
+
+/* Inline marks identify a section; the text remains the heading and TOC label. */
+.prose :is(h2,h3,h4) img { display: inline-block; width: 1.2em; height: 1.2em; object-fit: contain; margin: 0 .5em 0 0; vertical-align: -.2em; }
+.notebook-comparison { overflow-x: auto; }
+.notebook-comparison table { min-width: 40rem; overflow-wrap: normal; }

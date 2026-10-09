@@ -6,7 +6,9 @@ Formal models, specifications, and executable code in Lean for decentralized
 agent economies: task delegation, token transfers, and on-chain payments.
 
 [Modules and interactions](GiveAndTake/System/Note.mdx) introduces the environment
-of an on-chain agent economy. The source studies cover Ethereum execution-specs,
-OpenZeppelin ERC-20, PASS wallets, x402, and A2A.
+of an on-chain agent economy. The source studies cover Bitcoin, Ethereum
+execution-specs, Solana and Agave, OpenZeppelin ERC-20, PASS wallets, x402, and A2A.
+The blockchain examples model Ethereum balance-and-nonce transfers and Solana
+account-access conflicts, including contention on a shared fee payer.
 
 Licensed under [Apache-2.0](LICENSE).

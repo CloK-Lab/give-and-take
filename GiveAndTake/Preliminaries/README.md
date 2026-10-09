@@ -3,10 +3,16 @@
 [Modules and interactions](../System/Note.mdx) introduces the environment of an
 on-chain agent economy. [Quantities and units](Quantities/Note.mdx) supplies
 shared definitions for energy, time, amounts, nonces, and execution fees. The
-source studies then cover Ethereum, ERC-20, wallet authority, x402, and A2A.
-Each directory contains its source reading, model, and executable checks.
+source studies then cover Bitcoin, Ethereum, Solana, ERC-20, wallet authority,
+x402, and A2A.
+The blockchain note compares the ledger designs; the implemented cases are
+Ethereum transfers and Solana account-access compatibility.
 The Ethereum study includes an ETH transfer rule over balances and nonces,
 with examples of successful transfers and rejected replays.
+`Solana/` decides read/write account conflicts and proves compatibility is
+symmetric. Its examples show how a shared fee payer makes independent transfers
+conflict. It does not execute Solana programs or implement a scheduler. The
+[Blockchain infrastructure note](Ethereum/Note.mdx) explains both cases.
 `Quantities/` defines the nonce type used by those accounts, asset-indexed gas
 pricing, and a constant-power energy calculation. Energy is a resource and a
 cost input for the agent economy. The current implementation computes energy

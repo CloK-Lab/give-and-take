@@ -1,5 +1,6 @@
 import GiveAndTake.System.Examples
 import GiveAndTake.Preliminaries.Ethereum.Checks
+import GiveAndTake.Preliminaries.Solana.Checks
 import GiveAndTake.Preliminaries.Quantities.Checks
 import GiveAndTake.Preliminaries.ERC20.Checks
 import GiveAndTake.Preliminaries.A2A.Checks

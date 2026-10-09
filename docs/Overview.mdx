@@ -1,19 +1,12 @@
 These are working notes on how superintelligence and on-chain economic
 mechanisms coordinate work and allocate physical and computational resources.
 
-We follow the ecosystem as it develops and build as we learn, writing formal
-models, specifications, and executable code natively in
-[Lean 4](https://lean-lang.org/).
-
-Here, **decentralized superintelligence (DSI)** describes a proposed network
-where humans and SI agents combine their abilities to solve problems beyond
-any single participant. Energy powers computation; on-chain payments and
-incentives coordinate work and resource allocation, with verification focused on
-authorization, accounting, and allocation rules. The goal is to improve
-hardware, compute, software, and scientific models with formally verified
-properties, and use those advances to maintain and improve the network itself.
+We follow the ecosystem and build as we learn, developing formal models,
+specifications, and executable code natively in [Lean 4](https://lean-lang.org/).
 
 ![Verified Infrastructure: Hardware, Compute, Software, and Science surround a human-agent workshop. Short fabrication benches with workpieces and tool arms connect the four areas to the central DSI Network. Its outer hexagon contains six human-agent pairs; its inner hexagon contains six connected wallets, each linked to its nearest pair. Energy sits at the center. Gold marks Tokenomics on Chain; blue marks building, verifying, and improving infrastructure. The scene represents the research goal of jointly building, verifying, and improving infrastructure.](./assets/economy-overview.svg)
+
+*DSI: decentralized superintelligence.*
 
 ## Preliminaries
 
@@ -23,15 +16,15 @@ In the preliminaries, we document the existing infrastructure landscape.
   environment and the relationships between its parts.
 - [Quantities and units](../GiveAndTake/Preliminaries/Quantities/Note.mdx):
   shared definitions for energy, time, asset amounts, nonces, and gas fees.
-- [Ethereum and ETH](../GiveAndTake/Preliminaries/Ethereum/Note.mdx): Bitcoin and Ethereum whitepapers,
-  transactions, shared state, and ETH.
-- [ERC-20 tokens](../GiveAndTake/Preliminaries/ERC20/Note.mdx): OpenZeppelin's token
-  ledger, units, and transfers.
-- [Wallet authority](../GiveAndTake/Preliminaries/Wallet/Note.mdx): PASS's wallet
+- [Blockchain infrastructure](../GiveAndTake/Preliminaries/Ethereum/Note.mdx): Bitcoin, Ethereum,
+  and Solana: ledger state, transactions, account access, and fees.
+- [Assets and tokens](../GiveAndTake/Preliminaries/ERC20/Note.mdx): asset identity,
+  balances, units, and transfers, using ERC-20 and OpenZeppelin Contracts.
+- [Wallets and authorization](../GiveAndTake/Preliminaries/Wallet/Note.mdx): PASS's wallet
   model and a concrete spending policy.
-- [x402 payments](../GiveAndTake/Preliminaries/X402/Note.mdx): payment options,
+- [Payment protocols](../GiveAndTake/Preliminaries/X402/Note.mdx): payment options,
   asset amounts, and the distinction between authorization and settlement.
-- [A2A interfaces](../GiveAndTake/Preliminaries/A2A/Note.mdx): Agent Cards, skills,
+- [Agent communication](../GiveAndTake/Preliminaries/A2A/Note.mdx): Agent Cards, skills,
   interfaces, and task states.
 
 ## Examples

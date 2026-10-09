@@ -1,15 +1,38 @@
 ---
-title: "Ethereum and ETH"
-description: "From Bitcoin's payment history to Ethereum's accounts, transactions, and shared state."
+title: "Blockchain infrastructure"
+description: "Bitcoin, Ethereum, and Solana: state, transactions, account access, and execution fees."
 slug: preliminaries/ethereum
 order: 3
 section: Preliminaries
 ---
 
-This section introduces Ethereum as the chain infrastructure for accounts,
-assets, and payments.
+Alice pays Bob for a service. Bitcoin records the payment by spending outputs;
+Ethereum updates account balances; Solana invokes a program with named accounts.
+These are three references for blockchain infrastructure, with different rules
+for representing funds and executing transactions.
 
-## Recall Bitcoin
+<span id="three-ledger-designs"></span>
+
+<div className="notebook-comparison" aria-label="Bitcoin, Ethereum, and Solana comparison">
+
+| Aspect | Bitcoin | Ethereum | Solana |
+| --- | --- | --- | --- |
+| State | Unspent transaction outputs (UTXOs) | Accounts with balances, nonces, code, and storage | Accounts with lamports, data, and an owning program |
+| Action | Consume inputs and create outputs, subject to spending conditions | Transfer value, call a contract, or create one | Execute an ordered list of instructions on declared accounts |
+| Replay | An output can be consumed only once | An outgoing transaction must use the sender's next nonce | Check transaction freshness and reject already processed messages |
+| Unit | BTC / satoshi | ETH / wei | SOL / lamport |
+
+</div>
+
+The [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf),
+[Ethereum whitepaper](https://ethereum.org/whitepaper/), and
+[Solana documentation](https://solana.com/docs/core/accounts) supply the starting
+points. The examples below study state changes and account access; each network
+also has rules for agreeing on the accepted history.
+
+<span id="recall-bitcoin"></span>
+
+## ![](../../../docs/assets/chain-logos/bitcoin.svg)Bitcoin
 
 In a bank transfer, the bank keeps the ledger and updates balances when money
 moves. This lets it check that funds are available before approving a payment.
@@ -65,7 +88,9 @@ continues to grow. The whitepaper's security argument assumes that honest
 participants control most of the computing power.
 [Bitcoin's block and proof-of-work rules](https://developer.bitcoin.org/devguide/block_chain.html#proof-of-work).
 
-## State transitions
+## ![](../../../docs/assets/chain-logos/ethereum.svg)Ethereum
+
+### State transitions
 
 The [Ethereum whitepaper](https://ethereum.org/whitepaper/#bitcoin-as-a-state-transition-system)
 describes a ledger as a state transition system: a transaction changes the
@@ -95,7 +120,7 @@ The function takes a state, then a transaction. Its result is `some next` for
 $S'$ or `none` for $\bot$. For Ethereum, the network rules and block context
 must also be fixed.
 
-## Ethereum's shared state
+### Ethereum's shared state
 
 Ethereum's [account model](https://ethereum.org/whitepaper/#ethereum-accounts)
 associates each address with a nonce, an ETH balance, and, where applicable,
@@ -187,7 +212,7 @@ recipient coincide, debit and credit cancel, while the nonce still increases.
 The balance check ensures subtraction cannot underflow; `none` returns no
 updated state. The definitions use unbounded natural numbers.
 
-### Alice pays Bob
+#### Alice pays Bob
 
 Alice has 0.010 ETH and nonce 7. Bob has 0.002 ETH and nonce 0:
 
@@ -226,7 +251,7 @@ also accounts for gas and contract execution. A contract may update storage or
 call another contract. A reverted execution still consumes gas and the sender's
 nonce; it is different from the rejected transfer represented by `none` here.
 
-## From a transaction to a block
+### From a transaction to a block
 
 The diagram shows the transaction path in present-day Ethereum and how
 executing a transaction changes the state.
@@ -254,7 +279,7 @@ The original Ethereum whitepaper describes proof-of-work mining. Ethereum
 switched to proof of stake in 2022. Its account and execution concepts remain
 useful here; the diagram uses the current consensus mechanism.
 
-## Hashes and blocks
+### Hashes and blocks
 
 A hash is a fixed-length digest computed from data. The same input always gives
 the same digest; finding different inputs with the same digest should be
@@ -277,7 +302,7 @@ hash, assuming the hash function resists collisions. The next block's existing
 parent reference then no longer matches. Hash links make such changes
 detectable; the consensus rules determine which history the network accepts.
 
-## ETH, wei, and gas
+### ETH, wei, and gas
 
 Ethereum is the network. ETH is its native asset, and wei is its smallest unit:
 1 ETH = $10^{18}$ wei. A payment of **0.003 ETH** therefore carries
@@ -298,7 +323,7 @@ An invalid transaction, such as one with the wrong nonce, cannot be included
 as a valid transaction.
 [Transactions and gas](https://ethereum.org/developers/docs/transactions/).
 
-## Execution specifications
+### Execution specifications
 
 [ethereum/execution-specs](https://github.com/ethereum/execution-specs) gives
 executable Python rules organized by network fork. It is the reference for account fields and transaction
@@ -312,7 +337,7 @@ The Prague
 separates `value`, `gas`, and `gas_price`. This is one transaction format;
 it is not the fee format of every current Ethereum transaction.
 
-## Accounts and amounts
+### Accounts and amounts
 
 Our network identifier uses [CAIP-2](https://standards.chainagnostic.org/CAIPs/caip-2):
 `eip155:1` denotes Ethereum mainnet. Native ETH uses the
@@ -342,3 +367,140 @@ treated as already validated inputs.
 
 [EVMYulLean](https://github.com/NethermindEth/EVMYulLean/tree/047f63070309f436b66c61e276ab3b6d1169265a)
 models EVM and Yul machine execution, including machine state and operations.
+
+
+## ![](../../../docs/assets/chain-logos/solana.svg)Solana
+
+<span id="solanas-accounts-and-programs"></span>
+
+### Accounts and programs
+
+For a SOL payment, Alice sends a **System Program** transfer instruction naming
+her account, Bob's account, and the amount. Both accounts must be writable;
+Alice authorizes the debit by signing. The transaction also identifies its fee
+payer, which can be a different signer.
+[Transfer instruction and account permissions](https://solana.com/docs/core/transactions/transaction-structure#example-sol-transfer-transaction).
+
+An account holds a lamport balance, data, an owning program, and an executable
+flag. Here, **owner means the program allowed to modify the account's data and
+debit its lamports**. It does not mean the person whose key controls a wallet.
+Programs store their application state in separate data accounts, which are
+passed into instructions. This differs from Ethereum's association of a
+contract address with its code and storage.
+[Account structure](https://solana.com/docs/core/accounts/account-structure),
+[modification rules](https://solana.com/docs/core/accounts/modification-rules).
+
+### Transaction lifetime and failure
+
+An ordinary transaction includes a recent blockhash. The runtime checks that
+it is still valid and that the message has not already been processed.
+A **durable nonce account** supports transactions signed ahead of time; its
+stored nonce is not Ethereum's per-sender transaction counter.
+[Transaction checks](https://solana.com/docs/core/transactions/transaction-pipeline),
+[durable nonces](https://solana.com/docs/core/transactions/durable-nonces).
+
+Instructions within one transaction execute in order. If an instruction fails,
+the instruction changes are rolled back together. The fee remains charged, and
+a durable nonce already advanced during validation remains advanced.
+[Execution and rollback](https://solana.com/docs/core/transactions/transaction-pipeline#8-commit-or-rollback).
+
+### Account access and parallel execution
+
+Suppose Alice pays Bob while Carol pays Dave. Both transactions use the System
+Program, but they update different balances. Sharing a read-only program does
+not create a write conflict. Sharing Alice's account, Bob's account, or a common
+fee payer does.
+
+Solana transactions declare the accounts they access and their permissions.
+Agave's account-lock checks allow concurrent readers; a writer excludes both
+readers and other writers of that account. The reference here is
+[`AccountLocks` at revision `39f386a`](https://github.com/anza-xyz/agave/blob/39f386aadaf9a551eb690997e1d58769f165ea22/accounts-db/src/account_locks.rs#L92-L100).
+
+\begin{definition}[Account-access compatibility]
+
+For transaction $T_i$, let $R_i$ be its read-only accounts and $W_i$ its writable
+accounts, including the fee payer. Two transactions have compatible access if
+
+$$
+\begin{aligned}
+W_1 \cap (R_2 \cup W_2) &= \varnothing,\\
+W_2 \cap (R_1 \cup W_1) &= \varnothing.
+\end{aligned}
+$$
+
+The read-only sets may overlap. A writable account may be read as well as written.
+
+\end{definition}
+
+```lean4 file="./../Solana/Model.lean" declaration="AccountAccess"
+```
+
+The lists name resolved accounts with their effective permissions.
+`NoOverlap xs ys` means that no address in `xs` occurs in `ys`:
+
+```lean4 file="./../Solana/Spec.lean" declaration="Compatible"
+```
+
+```lean4 file="./../Solana/Execution.lean" declaration="canRunTogether"
+```
+
+`true` means these account accesses do not conflict. It does not establish that
+either transaction is valid or that a scheduler will execute them simultaneously.
+Address resolution, message validation, program execution, and resource limits
+are outside this check.
+
+#### Two payments, one shared wallet
+
+Each sender initially pays its own transaction fee:
+
+```lean4 file="./../Solana/Examples.lean" declaration="aliceToBob"
+```
+
+```lean4 file="./../Solana/Examples.lean" declaration="carolToDave"
+```
+
+A sponsor adds the same writable fee-payer account to both transactions:
+
+```lean4 file="./../Solana/Examples.lean" declaration="withSponsor"
+```
+
+```lean4 file="./../Solana/Examples.lean" declaration="paymentAccessExample"
+```
+
+The result is `(true, false)`: the first pair can acquire compatible account
+locks; the sponsored pair shares a write target. The build also checks a
+competing debit, a read/write overlap, and two readers with different fee payers.
+The compatibility relation is symmetric, as proved by `compatible_symm`.
+
+For an agent service market, this means separate tasks can still contend on one
+shared payment account. Wallet layout affects concurrency even when the tasks
+and their recipients are independent.
+
+### SOL, lamports, and compute units
+
+One SOL is $10^9$ lamports. A **compute unit (CU)** measures execution according
+to the runtime's cost rules. For legacy and v0 transactions, the fee is a
+signature-based base fee plus a prioritization fee:
+
+$$
+\begin{aligned}
+F_{\mathrm{total}} &= F_{\mathrm{base}} + F_{\mathrm{priority}},\\
+F_{\mathrm{priority}} &= \left\lceil
+  \frac{p_{\mathrm{CU}}\,L_{\mathrm{CU}}}{10^6}
+\right\rceil.
+\end{aligned}
+$$
+
+Here $p_{\mathrm{CU}}$ is in micro-lamports per CU, $L_{\mathrm{CU}}$ is the
+requested CU limit, and fees are in lamports. The priority fee uses the requested
+limit, even if execution consumes less. This differs from Ethereum's gas-used
+accounting. The documented v1 format instead specifies the priority fee directly
+in lamports. [Solana fee structure](https://solana.com/docs/core/fees/fee-structure),
+[Ethereum gas accounting](https://ethereum.org/developers/docs/gas/).
+
+Gas and CU are protocol accounting units. Neither supplies a conversion to
+joules: the [energy model](../Quantities/Note.mdx#physical-energy) needs separate
+power and duration inputs.
+
+The Solana documentation cited here was checked on 8 October 2026; the
+account-lock source is pinned above.
