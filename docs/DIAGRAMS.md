@@ -86,9 +86,9 @@ its infrastructure. They are a conceptual production scene, not literal physical
 assembly lines for software or science. Draw the benches behind the panels and
 network, with no arrows or crossing routes.
 
-Gold remains inside the wallet ring and denotes allocation. Keep all six wallets
+Gold remains inside the wallet ring and denotes on-chain tokenomics. Keep all six wallets
 connected in a smaller hexagon and linked to their nearest human–agent pair.
-The two short keys distinguish "Allocation" from "Build · verify · improve".
+The two keys distinguish "Tokenomics on Chain" from "Build · verify · improve".
 Wallets represent payment and spending capabilities within an allocation
 mechanism; they do not specify a particular chain or a complete allocation rule.
 

@@ -10,7 +10,7 @@ BLUE, PURPLE, GOLD = '#86b9d5', '#b6a4c9', '#c6ad79'
 INK, MUTED, RULE = '#dfebf4', '#9fa6b2', '#303b47'
 parts = ['''<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="920" viewBox="0 0 1080 920" role="img" aria-labelledby="title description">
 <title id="title">Verified Infrastructure and DSI Network</title>
-<desc id="description">Verified Infrastructure surrounds a human-agent workshop. Hardware, Compute, Software, and Science occupy four workstations. Short production benches carry workpieces between the stations and the central network, with jointed tool arms suggesting fabrication, verification, and improvement. Six human-agent cubes form the outer hexagon, six connected wallet cubes form the inner hexagon, and a blue energy flame sits at the center. Each wallet links to its nearest human-agent pair. Gold denotes allocation inside the network; blue denotes production and infrastructure. The illustration describes research goals rather than achieved capabilities or a literal automated factory.</desc>
+<desc id="description">Verified Infrastructure surrounds a human-agent workshop. Hardware, Compute, Software, and Science occupy four workstations. Short production benches carry workpieces between the stations and the central network, with jointed tool arms suggesting fabrication, verification, and improvement. Six human-agent cubes form the outer hexagon, six connected wallet cubes form the inner hexagon, and a blue energy flame sits at the center. Each wallet links to its nearest human-agent pair. Gold denotes on-chain tokenomics inside the network; blue denotes production and infrastructure. The illustration describes research goals rather than achieved capabilities or a literal automated factory.</desc>
 ''']
 fonts, licenses = [], []
 for package, family in [('jost', 'Jost'), ('ibm-plex-mono', 'Plex')]:
@@ -277,11 +277,11 @@ for compact in [False, True]:
     text(540,225,'DSI Network',42 if compact else 34)
     flame(540,476,3)
 
-    # Allocation stays in the wallet ring; the external benches show production.
-    line('M192 877 H224',GOLD,2)
-    text(238,885,'Allocation',30 if compact else 25,GOLD,anchor='start')
-    line('M490 877 H522',BLUE,2)
-    text(536,885,'Build · verify · improve',30 if compact else 25,BLUE,anchor='start')
+    # On-chain tokenomics belongs to the wallet ring; the benches show production.
+    line('M115 877 H147',GOLD,2)
+    text(161,885,'Tokenomics on Chain',30 if compact else 25,GOLD,anchor='start')
+    line('M574 877 H606',BLUE,2)
+    text(620,885,'Build · verify · improve',30 if compact else 25,BLUE,anchor='start')
     parts.append('</g>')
 parts.append('</svg>\n')
 (ROOT / 'docs/assets/economy-overview.svg').write_text(''.join(parts))
