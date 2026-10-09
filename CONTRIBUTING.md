@@ -36,7 +36,7 @@ to a pinned specification. External services, facts, and non-Lean implementation
 need their own correspondence arguments.
 
 For strategic claims, define utilities, information, allowed deviations, and
-environment assumptions. Record AI-generated behavior as reproducible traces;
+environment assumptions. Record SI-generated behavior as reproducible traces;
 one trace is not a theorem about every possible agent policy.
 
 Do not use `sorry`, `admit`, custom axioms, or `native_decide` to complete proofs.

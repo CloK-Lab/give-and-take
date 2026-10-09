@@ -100,7 +100,7 @@ rendering widens the panels and enlarges their artwork and labels.
 "Superintelligence" describes the project's intended direction, not a claim of
 achieved capability. "Verified Infrastructure" states the research goal: specified properties of
 scientific models, hardware designs, computations, and software. It is not a certification of
-existing outputs, a proof of empirical truth, or an AI-safety guarantee. Digital
+existing outputs, a proof of empirical truth, or an SI-safety guarantee. Digital
 records support an allocation mechanism; a record alone does not determine a
 fair or correct allocation. The maintenance loop represents improvements, not
 recovery of consumed energy. The flame, the experiment, and the server count
