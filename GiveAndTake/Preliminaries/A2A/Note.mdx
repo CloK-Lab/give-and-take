@@ -2,7 +2,7 @@
 title: "A2A interfaces"
 description: "Read the A2A schema and model capability discovery and task states."
 slug: preliminaries/a2a
-order: 6
+order: 7
 section: Preliminaries
 ---
 
@@ -28,6 +28,11 @@ defines the objects used for discovery and interaction:
 The [A2A specification](https://a2a-protocol.org/v1.0.0/specification/) also defines
 messages and task artifacts. An Agent Card describes how to interact with an
 agent; these discovery fields do not establish payment authorization.
+
+For the economic model, [shared quantities](../Quantities/Note.mdx) give types
+for a task's duration (`Duration`), energy use (`Energy`), and price
+(`Amount asset`). These belong to service accounting around a task; the card
+and task-state definitions below describe the interaction.
 
 ## Cards and task states
 

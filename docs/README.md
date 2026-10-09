@@ -67,9 +67,11 @@ result means beside the relevant code.
 
 ## Diagrams
 
-Follow the [diagram style](DIAGRAMS.md): editable SVG, isometric module nodes,
-CloK typography, and consistent colors for task interaction, spending authority,
-and settlement. Reuse the approved system diagram and its generation script.
+Follow the [diagram style](DIAGRAMS.md): editable SVG, CloK typography,
+and consistent colors for task interaction, spending authority, and settlement.
+Use isometric nodes for module relationships, proportional bands for resource
+allocation, ledger views for balance changes, and state graphs for alternative
+outcomes. Reuse the matching generation script.
 
 ## Shared documentation format
 

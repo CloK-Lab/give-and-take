@@ -2,7 +2,7 @@
 title: "One paid call"
 description: "Follow reservation, settlement, and refund, and explain why the total stays unchanged."
 slug: paid-call
-order: 8
+order: 9
 section: Examples
 ---
 
@@ -16,12 +16,7 @@ Start with 100 units available to the buyer and 20 to the provider. We introduce
 a reservation: 30 units are set aside for this call, so neither party can spend
 them while payment is pending.
 
-| Step | Buyer available | Provider available | Reserved | Total |
-| --- | --- | --- | --- | --- |
-| Start | 100 | 20 | 0 | 120 |
-| Reserve 30 | 70 | 20 | 30 | 120 |
-| Then settle | 70 | 50 | 0 | 120 |
-| Or refund instead | 100 | 20 | 0 | 120 |
+![Reserve 30 from the buyer's 100 units. The pending state holds buyer 70, provider 20, and reserved 30. Settlement gives the provider 50; alternatively, refund restores the buyer to 100. Either path preserves the total of 120.](../../docs/assets/paid-call-paths.svg)
 
 Settlement transfers the reservation to the provider. Refund returns it to the
 buyer. These are alternative endings to the same reservation.
@@ -51,7 +46,7 @@ The function `escrow` reads the reserved amount, returning zero in every other p
 ```lean4 file="./Model.lean" declaration="escrow"
 ```
 
-Now we can calculate the quantity in the last column of the table:
+The sum of the three balances is:
 
 ```lean4 file="./Model.lean" declaration="totalFunds"
 ```
@@ -76,7 +71,7 @@ require a reservation. Everything else is rejected.
 
 </CodePreview>
 
-Read each successful branch against the table. Reservation subtracts from the
+Read each successful branch against the diagram. Reservation subtracts from the
 buyer, settlement adds to the provider, and refund adds back to the buyer.
 `some next` returns the resulting state; `none` rejects the action without
 returning a new state. After either ending, the final catch-all branch also

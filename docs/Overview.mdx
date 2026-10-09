@@ -1,15 +1,27 @@
 We study decentralized agent economies through formal models, specifications,
 and executable code in [Lean4](https://lean-lang.org/) natively.
 
+Here, **decentralized superintelligence (DSI)** describes a proposed network
+where humans and AI agents combine their abilities to solve problems beyond
+any single participant. Energy powers computation; on-chain payments and
+incentives coordinate work and resource allocation. The goal is to improve
+hardware, compute, software, and scientific models with mathematically verified
+properties, and use those advances to maintain and improve the network itself.
+
+![DSI on Chain: six human-agent pairs connect to their nearest wallets around a central energy symbol. Two Improve arrows connect the network with Mathematically verified infra, arranged in a two-by-two grid: Hardware and Compute above Software and Science. Their illustrations are a chip, a server cluster, a code editor, and an experiment. The figure shows the project's research goals.](./assets/economy-overview.svg)
+
 ## Preliminaries
 
-The environment for an on-chain agent economy: networks and accounts, assets
-and units, spending authority, service payments, and agent interaction.
+The components of an agent economy: energy and computation, networks
+and accounts, assets and units, spending authority, service payments, and agent
+interaction.
 
 - [Modules and interactions](../GiveAndTake/System/Note.mdx): an overview of the
   environment and the relationships between its parts.
-- [Ethereum and ETH](../GiveAndTake/Preliminaries/Ethereum/Note.mdx): execution-specs,
-  account balances, and wei.
+- [Quantities and units](../GiveAndTake/Preliminaries/Quantities/Note.mdx):
+  shared definitions for energy, time, asset amounts, nonces, and gas fees.
+- [Ethereum and ETH](../GiveAndTake/Preliminaries/Ethereum/Note.mdx): Bitcoin and Ethereum whitepapers,
+  transactions, shared state, and ETH.
 - [ERC-20 tokens](../GiveAndTake/Preliminaries/ERC20/Note.mdx): OpenZeppelin's token
   ledger, units, and transfers.
 - [Wallet authority](../GiveAndTake/Preliminaries/Wallet/Note.mdx): PASS's wallet

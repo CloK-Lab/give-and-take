@@ -2,13 +2,15 @@
 title: "ERC-20 tokens"
 description: "Read OpenZeppelin's token ledger and model an ordinary transfer."
 slug: preliminaries/erc20
-order: 3
+order: 4
 section: Preliminaries
 ---
 
 Alice holds 100 base units of a token and transfers 30 to Bob. The token contract
 records 70 for Alice and 30 for Bob. These numbers belong to that token's ledger;
 they are not the ETH balances of Alice and Bob.
+
+![A transfer of 30 token base units changes Alice's balance from 100 to 70 and Bob's from 0 to 30. Total supply stays at 100.](../../../docs/assets/token-transfer.svg)
 
 ## In OpenZeppelin Contracts
 

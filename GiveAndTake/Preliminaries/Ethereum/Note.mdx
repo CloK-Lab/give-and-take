@@ -1,30 +1,316 @@
 ---
 title: "Ethereum and ETH"
-description: "Read Ethereum's execution specification and model native balances in wei."
+description: "From Bitcoin's payment history to Ethereum's accounts, transactions, and shared state."
 slug: preliminaries/ethereum
-order: 2
+order: 3
 section: Preliminaries
 ---
 
-A payment of **0.003 ETH** carries an integer value of **3,000,000,000,000,000 wei**.
-Ethereum is the network, ETH is the asset, and wei is its smallest unit:
-1 ETH = $10^{18}$ wei. Both transaction values and native account balances use
-wei. [Ethereum's unit reference](https://ethereum.org/developers/docs/intro-to-ether/)
-describes these denominations.
+This section introduces Ethereum as the chain infrastructure for accounts,
+assets, and payments.
 
-## In execution-specs
+## Recall Bitcoin
 
-[ethereum/execution-specs](https://github.com/ethereum/execution-specs) is an
-executable Python specification of Ethereum's execution layer, organized by fork.
+In a bank transfer, the bank keeps the ledger and updates balances when money
+moves. This lets it check that funds are available before approving a payment.
+Bitcoin's motivation was to make electronic payments possible without relying
+on such a trusted intermediary.
+
+<Callout title="Question">
+
+Without a bank keeping the ledger, how can we prevent the same digital funds
+from being spent twice?
+
+</Callout>
+
+This is the **double-spending problem**. On 31 October 2008, Satoshi Nakamoto
+[announced Bitcoin](https://www.metzdowd.com/pipermail/cryptography/2008-October/014810.html).
+The [whitepaper](https://bitcoin.org/bitcoin.pdf) proposed a solution: participants
+share a transaction history and use proof of work to agree on which history
+to accept.
+
+For example, Alice signs a payment to Bob, then signs another payment to Carol
+using the same funds. Bob can verify that Alice authorized his payment. That
+signature does not tell him whether she has also paid Carol with those funds.
+
+> The problem of course is the payee can't verify that one of the owners did not double-spend the coin.
+>
+> — Satoshi Nakamoto, [Section 2: Transactions](https://bitcoin.org/bitcoin.pdf#page=2)
+
+![Alice signs two transactions spending the same unspent output u: Tx1 pays Bob and Tx2 pays Carol. Nodes check signatures and unspent inputs. The branch containing Tx1 has more accumulated proof of work in this example, so nodes follow it. A valid chain cannot contain both spends.](../../../docs/assets/bitcoin-double-spend.svg)
+
+Here, `u` is one unspent transaction output controlled by Alice. Either payment
+can spend it, but a valid chain cannot include both. The blocks in this example
+have equal difficulty, so the branch with more blocks also has more work.
+
+### From a payment to a block
+
+![Peers relay Alice's signed payment. Miners build a candidate block and change its header until double SHA-256 gives a hash at or below the target. Full nodes check the proof and transactions. Changing an old payment changes its block hash and later parent references, requiring new proof of work for every affected block and a replacement branch that overtakes the honest chain.](../../../docs/assets/bitcoin-proof-of-work.svg)
+
+1. **Broadcast.** Alice sends her signed transaction to peers, which relay it
+   through the network.
+2. **Mine.** Miners choose valid transactions and summarize them in a **Merkle
+   root**, a hash stored in the block header alongside the previous block's
+   hash. They vary the nonce and other header data until hashing the header
+   twice with SHA-256 gives a value at or below the **target**. The network's
+   difficulty rules set this target; a lower target requires more attempts
+   on average.
+3. **Verify.** Full nodes check the proof of work and every transaction. They
+   follow the valid chain with the greatest accumulated work.
+
+Changing an earlier payment changes its block's Merkle root and hash. Every
+later header in that branch must then change, and its proof of work must be
+redone. The replacement branch must also overtake the honest chain as it
+continues to grow. The whitepaper's security argument assumes that honest
+participants control most of the computing power.
+[Bitcoin's block and proof-of-work rules](https://developer.bitcoin.org/devguide/block_chain.html#proof-of-work).
+
+## State transitions
+
+The [Ethereum whitepaper](https://ethereum.org/whitepaper/#bitcoin-as-a-state-transition-system)
+describes a ledger as a state transition system: a transaction changes the
+current state, or is rejected. For Bitcoin, that state is the set of unspent
+transaction outputs.
+
+\begin{definition}[Transaction state transition system]
+
+A deterministic transaction state transition system consists of a set of states
+$\Sigma$, a set of transactions $\mathcal{T}$, and a function
+
+$$
+\delta : \Sigma \times \mathcal{T} \longrightarrow \Sigma \cup \{\bot\}.
+$$
+
+Here $\delta(S,T)=S'$ means that transaction $T$ changes state $S$ to $S'$.
+The symbol $\bot$ means the transaction is rejected, with no new state produced.
+The same state and transaction always give the same result.
+
+\end{definition}
+
+```lean4 file="./Model.lean" declaration="Transition"
+```
+
+`State` represents $\Sigma$, and `Transaction` represents $\mathcal{T}$.
+The function takes a state, then a transaction. Its result is `some next` for
+$S'$ or `none` for $\bot$. For Ethereum, the network rules and block context
+must also be fixed.
+
+## Ethereum's shared state
+
+Ethereum's [account model](https://ethereum.org/whitepaper/#ethereum-accounts)
+associates each address with a nonce, an ETH balance, and, where applicable,
+code and storage. The nonce is the counter used to check outgoing transactions.
+A transaction can transfer ETH or execute contract code.
+The account definitions below reuse `Nonce` and `Amount` from
+[Quantities and units](../Quantities/Note.mdx); `Wei` specializes the amount
+type to native ETH.
+
+To describe an ETH transfer, keep only balances and nonces. Amounts are integer
+numbers of **wei**, where $1\ \mathrm{ETH}=10^{18}\ \mathrm{wei}$. Authentication,
+fees, and contract execution are outside this transfer model.
+
+\begin{definition}[Account state]
+
+Let $A$ be a set of addresses. A state maps each address $a$ to its account:
+
+$$
+\begin{aligned}
+S &: A \longrightarrow \mathrm{Account},\\
+S(a) &= (n(a),b(a)).
+\end{aligned}
+$$
+
+Here $n(a)\in\mathbb{N}$ is the nonce required by the next outgoing transfer,
+and $b(a)\in\mathbb{N}$ is the balance in wei.
+
+\end{definition}
+
+```lean4 file="./Model.lean" declaration="Account"
+```
+
+```lean4 file="./Model.lean" declaration="State"
+```
+
+`state address` is $S(a)$; its `.nonce.value` and `.balance.units` fields give
+$n(a)$ and $b(a)$. `Wei` attaches the amount to native ETH. Strings stand for
+already validated addresses.
+
+\begin{definition}[Transfer and acceptance]
+
+A transfer is $T=(s,r,v,k)$: sender $s$, recipient $r$, value $v$ in wei,
+and nonce $k$, with $s,r\in A$ and $v,k\in\mathbb{N}$. Assuming the sender
+has been authenticated, the acceptance condition is
+
+$$
+\begin{aligned}
+\mathrm{Valid}(S,T)\iff{} & k=n(s)\\
+& {}\land v\leq b(s).
+\end{aligned}
+$$
+
+\end{definition}
+
+```lean4 file="./Model.lean" declaration="Transfer"
+```
+
+```lean4 file="./Spec.lean" declaration="ValidTransfer"
+```
+
+The four fields correspond to $(s,r,v,k)$. `ValidTransfer` is a proposition
+about the current state and transfer; it changes no account. Both checks compare
+natural numbers, so the proposition is decidable. The sender field
+names an account but does not establish control of it—authentication must
+happen before calling this rule.
+
+\begin{definition}[Transfer rule]
+
+If $\mathrm{Valid}(S,T)$ is false, $\delta(S,T)=\bot$. Otherwise the result
+is a state $S'$ whose balance and nonce at each address $a$ satisfy
+
+$$
+\begin{aligned}
+b'(a) &= b(a)-v\mathbf{1}_{a=s}+v\mathbf{1}_{a=r},\\
+n'(a) &= n(a)+\mathbf{1}_{a=s}.
+\end{aligned}
+$$
+
+The indicator $\mathbf{1}_{a=s}$ is $1$ when $a=s$ and $0$ otherwise.
+
+\end{definition}
+
+```lean4 file="./Execution.lean" declaration="applyTransfer"
+```
+
+`debit` and `credit` are the balance terms in the formula. `Nonce.next`
+implements the increment for the sender; other nonces stay unchanged. Every account is computed from the same input state. If sender and
+recipient coincide, debit and credit cancel, while the nonce still increases.
+The balance check ensures subtraction cannot underflow; `none` returns no
+updated state. The definitions use unbounded natural numbers.
+
+### Alice pays Bob
+
+Alice has 0.010 ETH and nonce 7. Bob has 0.002 ETH and nonce 0:
+
+```lean4 file="./Examples.lean" declaration="initialState"
+```
+
+Alice submits a transfer of 0.003 ETH to Bob with nonce 7:
+
+```lean4 file="./Examples.lean" declaration="payment"
+```
+
+The example observes the balances and sender nonce with named fields:
+
+```lean4 file="./Examples.lean" declaration="TransferSnapshot"
+```
+
+```lean4 file="./Examples.lean" declaration="transferExample"
+```
+
+`transferExample` returns `some` with `senderBalance = milliEther 7`,
+`recipientBalance = milliEther 5`, and `senderNonce.value = 8`:
+
+| Value | Before | After |
+| --- | --- | --- |
+| Alice's balance | 0.010 ETH | 0.007 ETH |
+| Bob's balance | 0.002 ETH | 0.005 ETH |
+| Alice's nonce | 7 | 8 |
+| Bob's nonce | 0 | 0 |
+
+Submitting the same transfer again returns `none`, because nonce 7 no longer
+matches 8. A competing payment from Alice to Carol with nonce 7 is rejected
+for the same reason.
+
+Ethereum's [full transition](https://ethereum.org/whitepaper/#ethereum-state-transition-function)
+also accounts for gas and contract execution. A contract may update storage or
+call another contract. A reverted execution still consumes gas and the sender's
+nonce; it is different from the rejected transfer represented by `none` here.
+
+## From a transaction to a block
+
+The diagram shows the transaction path in present-day Ethereum and how
+executing a transaction changes the state.
+
+![A wallet signs a transaction. A proposer includes it in an ordered block. Other nodes re-execute the transactions and check the resulting state; validators attest. Execution takes the previous state and a transaction to produce the next state. Each execution block has a header and a transaction list. Its block hash is computed from the encoded header, and the next block records that hash as its parent hash. Validator votes support chain selection and checkpoint finality.](../../../docs/assets/ethereum-mechanism.svg)
+
+1. **Submit.** The wallet signs a transaction specifying the recipient, value,
+   nonce, fee parameters, and optional call data, then sends it to the network.
+   It is pending until included in a block.
+   [Transaction lifecycle](https://ethereum.org/developers/docs/transactions/#transaction-lifecycle).
+2. **Execute and check.** A proposed block contains an ordered list of
+   transactions. Execution clients apply them to the parent state, including
+   any contract execution in the EVM. Other nodes repeat the computation and
+   check the result against the block's state root, a hash commitment to that
+   state. The same starting state and valid block must produce the same result.
+   [Blocks](https://ethereum.org/developers/docs/blocks/),
+   [EVM](https://ethereum.org/developers/docs/evm/).
+3. **Agree on the history.** Validators attest to blocks. Fork choice selects
+   the chain head; votes representing at least two-thirds of the active stake
+   can justify and finalize checkpoints under the protocol's rules. Inclusion
+   in a block and finality are different stages.
+   [Proof of stake](https://ethereum.org/developers/docs/consensus-mechanisms/pos/).
+
+The original Ethereum whitepaper describes proof-of-work mining. Ethereum
+switched to proof of stake in 2022. Its account and execution concepts remain
+useful here; the diagram uses the current consensus mechanism.
+
+## Hashes and blocks
+
+A hash is a fixed-length digest computed from data. The same input always gives
+the same digest; finding different inputs with the same digest should be
+computationally infeasible.
+
+The bottom of the diagram shows the structure of **execution blocks**. Each
+contains a header and a body with an ordered transaction list. The header's
+`transactions_root` commits to that list, and `state_root` commits to the state
+after execution. Its `parent_hash` identifies the preceding execution block.
+[Block structure](https://ethereum.org/developers/docs/blocks/#whats-in-a-block).
+
+The block hash is computed from the encoded header:
+`block hash = Keccak-256(RLP(header))`. The diagram abbreviates this as
+`hash(header)` and labels the results `h0`, `h1`, and `h2`. Block n stores `h0`
+as its parent hash; Block n + 1 stores `h1`.
+[Header hashing in Geth](https://github.com/ethereum/go-ethereum/blob/master/core/types/block.go).
+
+Changing a transaction changes its root commitment and therefore the block
+hash, assuming the hash function resists collisions. The next block's existing
+parent reference then no longer matches. Hash links make such changes
+detectable; the consensus rules determine which history the network accepts.
+
+## ETH, wei, and gas
+
+Ethereum is the network. ETH is its native asset, and wei is its smallest unit:
+1 ETH = $10^{18}$ wei. A payment of **0.003 ETH** therefore carries
+**3,000,000,000,000,000 wei**.
+[Ethereum's unit reference](https://ethereum.org/developers/docs/intro-to-ether/).
+
+Gas measures the resources used by a transaction. The
+[fee definition](../Quantities/Note.mdx#gas-and-fees) multiplies supplied gas
+usage by its effective price, with explicit units. This accounting function
+is separate from the transfer rule above. The sender pays a fee in ETH
+in addition to the amount transferred. Including this fee in Alice's example
+leaves her with **0.007 ETH minus the transaction fee**. Bob still receives
+0.003 ETH; Alice's nonce still increases from 7 to 8.
+
+Contract execution can fail even after a transaction is included. A reverted
+call rolls back its contract changes, but the sender still pays for gas used.
+An invalid transaction, such as one with the wrong nonce, cannot be included
+as a valid transaction.
+[Transactions and gas](https://ethereum.org/developers/docs/transactions/).
+
+## Execution specifications
+
+[ethereum/execution-specs](https://github.com/ethereum/execution-specs) gives
+executable Python rules organized by network fork. It is the reference for account fields and transaction
+processing; the transfer model above keeps only balances and nonces.
+
 At revision `dc6d1a5`,
 [`Account` in state.py](https://github.com/ethereum/execution-specs/blob/dc6d1a55cef60d45dbd5969c8d602610daecf604/src/ethereum/state.py)
 contains a nonce, balance, and code hash. Contract storage is tracked separately.
-
 The Prague
 [`LegacyTransaction` definition](https://github.com/ethereum/execution-specs/blob/dc6d1a55cef60d45dbd5969c8d602610daecf604/src/ethereum/forks/prague/transactions.py)
-separates `value`, `gas`, and `gas_price`. The recipient receives the transfer
-value; gas pays for execution. Sending 0.003 ETH therefore costs the sender
-the value plus the transaction fee.
+separates `value`, `gas`, and `gas_price`. This is one transaction format;
+it is not the fee format of every current Ethereum transaction.
 
 ## Accounts and amounts
 
@@ -48,15 +334,11 @@ floating-point numbers.
 ```lean4 file="./Model.lean" declaration="milliEther"
 ```
 
-The account projection retains the nonce and native balance:
-
-```lean4 file="./Model.lean" declaration="Account"
-```
-
 `milliEther 3` evaluates to 3,000,000,000,000,000 wei; `milliEther 1000` to one ETH.
 The build checks both conversions. `Nat` gives mathematical nonnegative amounts;
-this projection omits the upstream `U256` bound, code, storage, and transaction
-execution. Network and address strings are treated as already validated inputs.
+the model omits the upstream `U256` bound. Its transfer rule does not verify
+signatures, charge gas, or execute contracts. Network and address strings are
+treated as already validated inputs.
 
 [EVMYulLean](https://github.com/NethermindEth/EVMYulLean/tree/047f63070309f436b66c61e276ab3b6d1169265a)
 models EVM and Yul machine execution, including machine state and operations.

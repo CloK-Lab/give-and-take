@@ -83,9 +83,10 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 400; color: var(--te
 .notebook-copy { border: 1px solid var(--border-subtle); border-radius: 3px; padding: .35rem .6rem; color: var(--text-secondary); cursor: pointer; }
 .notebook-copy:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
 .prose .notebook-code pre { margin: 0; border: 0; padding: 1rem 0; }
-.notebook-code pre code { counter-reset: line; display: block; min-width: max-content; }
-.notebook-code .line { display: inline-block; width: 100%; padding: 0 1rem 0 0; }
-.notebook-code .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 3rem; padding-right: 1rem; text-align: right; color: #7d8590; user-select: none; }
+/* Wrap to the reading column while retaining source lines and a fixed gutter. */
+.notebook-code pre code { counter-reset: line; display: grid; min-width: 0; white-space: normal; }
+.notebook-code .line { position: relative; display: block; min-width: 0; min-height: 1.7em; padding: 0 1rem 0 3rem; white-space: pre-wrap; overflow-wrap: anywhere; }
+.notebook-code .line::before { box-sizing: border-box; position: absolute; left: 0; counter-increment: line; content: counter(line); width: 3rem; padding-right: 1rem; text-align: right; color: #7d8590; user-select: none; }
 .notebook-code .line.highlighted { background: #223844; box-shadow: inset 2px 0 #79b8db; }
 .notebook-callout { margin: 1.5rem 0; padding: .25rem 1.25rem; border-left: 3px solid var(--accent-primary); background: var(--surface-panel); }
 .notebook-callout[data-type="warning"] { border-color: var(--status-warning); }
