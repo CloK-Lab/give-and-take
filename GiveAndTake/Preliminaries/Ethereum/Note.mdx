@@ -6,10 +6,15 @@ order: 3
 section: Preliminaries
 ---
 
-Alice pays Bob for a service. Bitcoin records the payment by spending outputs;
-Ethereum updates account balances; Solana invokes a program with named accounts.
-These are three references for blockchain infrastructure, with different rules
-for representing funds and executing transactions.
+In this section, we review Bitcoin, Ethereum, and Solana, focusing on their
+ledger structures, transaction execution mechanisms, and fee systems. We use
+Lean to develop mathematical models, formal specifications, and executable
+programs for selected mechanisms.
+
+Our main references are the [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf),
+the [Ethereum whitepaper](https://ethereum.org/whitepaper/) and
+[execution specifications](https://github.com/ethereum/execution-specs), and the
+[Solana documentation](https://solana.com/docs).
 
 <span id="three-ledger-designs"></span>
 
@@ -23,12 +28,6 @@ for representing funds and executing transactions.
 | Unit | BTC / satoshi | ETH / wei | SOL / lamport |
 
 </div>
-
-The [Bitcoin whitepaper](https://bitcoin.org/bitcoin.pdf),
-[Ethereum whitepaper](https://ethereum.org/whitepaper/), and
-[Solana documentation](https://solana.com/docs/core/accounts) supply the starting
-points. The examples below study state changes and account access; each network
-also has rules for agreeing on the accepted history.
 
 <span id="recall-bitcoin"></span>
 

@@ -94,7 +94,7 @@ def energy_flow():
         else:
             d.text(24, 37, 'RESOURCE FLOW', 19, BLUE, mono=True)
             d.text(976, 37, 'ILLUSTRATIVE INPUTS', 17, MUTED, 'end', True)
-            d.text(24, 92, 'One interval. Three device boundaries.', 33)
+            d.text(24, 92, 'Energy consumption by device', 33)
             d.text(976, 90, '100 W × 2 s = 200 J', 29, BLUE, 'end')
             d.rect(0, 130, 1000, 479, '#0e151d', '#283643')
             d.text(24, 170, 'ELECTRICITY CONSUMED', 16, MUTED, mono=True)
