@@ -1,5 +1,5 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "docs/**/*", "GiveAndTake/**/*.mdx"],
+  "include": [".astro/types.d.ts", "docs/**/*", "VDSI/**/*.mdx"],
   "exclude": ["dist", "node_modules"]
 }

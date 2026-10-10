@@ -1,9 +1,9 @@
-# Working on Give and take
+# Working on ν-DSI
 
 This is a CloK learning and research project toward a verified decentralized
 superintelligence (DSI) system. Its purpose is to build formal models,
 specifications, and executable code in Lean for human-agent coordination and
-physical and computational resource allocation, supporting the construction,
+resource allocation through digital tokenomics, supporting the construction,
 verification, and improvement of infrastructure. Agent protocols, payments,
 tokenized assets, incentives, and safety are parts of that system.
 

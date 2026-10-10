@@ -6,7 +6,7 @@ Name and link the main reference documents where relevant. Develop worked
 examples in the relevant subsections, explain the modeling choices, and connect
 the Lean definitions to the behavior being studied. Include
 enough reasoning for a reader to follow the result. Prefer revising an unclear
-note to adding another topic. [One paid call](../GiveAndTake/Cases/PaidCall/Note.mdx)
+note to adding another topic. [One paid call](../VDSI/Cases/PaidCall/Note.mdx)
 is the first example.
 
 ## Preview locally
@@ -24,7 +24,7 @@ the changed pages, including at phone width. `npm run preview` serves the built 
 ## Keep the note beside its code
 
 Write `Note.mdx` beside the relevant module, for example
-`GiveAndTake/Cases/PaidCall/Note.mdx`. Its metadata supplies the navigation:
+`VDSI/Cases/PaidCall/Note.mdx`. Its metadata supplies the navigation:
 
 ```yaml
 ---
@@ -90,6 +90,11 @@ adapted under Apache-2.0. The notebook builds independently of other repositorie
 
 Read the notebook on [CloK](https://www.clok.tech/docs/give-and-take), where the
 main website supplies the navbar. The local Astro preview shows the document body.
+
+The GitHub repository is `CloK-Lab/vdsi`, and the project title is `ν-DSI`.
+Keep the published project slug `give-and-take` so existing documentation URLs
+continue to resolve. The repository name and Lean module root are independent
+of that stable publication identifier.
 
 The shared `Sync project documentation` workflow checks registered projects hourly
 and proposes updates after their CI passes. Website checks and the deployment

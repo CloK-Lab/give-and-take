@@ -1,7 +1,7 @@
 # Diagram style
 
 Use the approved [system diagram](assets/native-system.svg) as the visual reference
-for Give and take. Keep this guide in contributor documentation, not in the
+for ν-DSI. Keep this guide in contributor documentation, not in the
 learning notes.
 
 ## Visual language

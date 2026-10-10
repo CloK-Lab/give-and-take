@@ -13,7 +13,7 @@ for package, family in [('jost', 'Jost'), ('ibm-plex-mono', 'Plex')]:
 
 blue, purple, gold = '#86b9d5', '#b6a4c9', '#c6ad79'
 parts = ['''<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" role="img" aria-labelledby="title description">
-<title id="title">Give and take — system modules</title>
+<title id="title">ν-DSI — system modules</title>
 <desc id="description">Agent A requests a task from Agent B and submits a spending request to Wallet. Payment combines the provider's terms with wallet authorization and settles the transfer in Ledger. The paid task can then execute and return its result. ETH is the asset. Wallet limits, payment amounts, and ledger balances are measured in wei. The ledger is local Lean state.</desc>
 ''', '<metadata>' + escape('\n\n'.join(licenses)) + '</metadata>', '<style>', *fonts, '''
 text{font-family:Jost,sans-serif;font-weight:400;fill:#dfebf4}

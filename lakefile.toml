@@ -1,14 +1,14 @@
-name = "give-and-take"
+name = "vdsi"
 version = "0.1.0"
-defaultTargets = ["GiveAndTake", "demo"]
+defaultTargets = ["VDSI", "demo"]
 
 [leanOptions]
 warningAsError = true
 
 [[lean_lib]]
-name = "GiveAndTake"
+name = "VDSI"
 # Include every module's checks without importing fixtures into the library facade.
-globs = ["GiveAndTake.*"]
+globs = ["VDSI.*"]
 
 [[lean_exe]]
 name = "demo"

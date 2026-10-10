@@ -1,6 +1,6 @@
 # Contributing
 
-Give and take grows through shared study. Contributions can start with a precise
+ν-DSI grows through shared study. Contributions can start with a precise
 question, a source reading, a model, an executable example, a counterexample, or
 a theorem. Focus on one question, explain it through a concrete example, and
 keep the change small enough to study together. Improve existing explanations
@@ -21,7 +21,7 @@ discussion can use the participants' preferred language.
 
 ## Structure and evidence
 
-Keep shared definitions in `GiveAndTake/Foundation/`, external facility models
+Keep shared definitions in `VDSI/Foundation/`, external facility models
 in `Reference/`, the project's implementations in `Native/`, and executable
 scenarios in `Cases/`. Keep each module's model, specification, execution,
 verification, checks, and note together. Execution must not import verification.
@@ -82,8 +82,8 @@ lake env lean scripts/Audit.lean
 
 Keep the toolchain pinned and add dependencies only when a concrete case needs
 them. Update source notes and the README when the implemented scope changes.
-The library's `GiveAndTake.*` Lake glob builds all modules, including checks and
-examples. `GiveAndTake.lean` exports definitions and proofs without importing
+The library's `VDSI.*` Lake glob builds all modules, including checks and
+examples. `VDSI.lean` exports definitions and proofs without importing
 test fixtures; the demo imports its concrete cases directly.
 For changes to the optional reference probe, run `npm run test:reference-chain`.
 Its tests use mocked responses. Live `npm run check:reference-chain` is a

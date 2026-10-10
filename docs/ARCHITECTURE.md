@@ -1,6 +1,6 @@
 # Chain and stablecoin architecture
 
-Give and take develops a verified decentralized superintelligence (DSI) system
+ν-DSI develops a verified decentralized superintelligence (DSI) system
 for human-agent coordination and physical and computational resource allocation,
 as described in the [overview](Overview.mdx). This document specifies its chain
 and monetary subsystem. The planned implementation uses Lean for the chain,
@@ -107,7 +107,7 @@ Those are separate claims with separate assumptions and evidence.
 The existing modules have four locations:
 
 ```text
-GiveAndTake/
+VDSI/
   Foundation/
     Network.lean
     Asset.lean
@@ -158,7 +158,7 @@ specifications do not replace these local specifications. Execution never
 imports its verification module.
 
 The library facade exports definitions and proofs. Lake builds every module
-through the `GiveAndTake.*` glob, so checks remain part of the default build
+through the `VDSI.*` glob, so checks remain part of the default build
 without becoming facade imports. `Main.lean` imports and runs the concrete
 cases. The axiom audit uses the exported theorem names.
 
@@ -318,8 +318,8 @@ redemption trace survives restart. Develop it in the following order:
    node and client; test the complete trace and rejection paths.
 
 Keep each case's definitions, specifications, execution, verification, checks,
-and note together. Add `GiveAndTake/Native/Chain/`,
-`GiveAndTake/Native/Stablecoin/`, and `GiveAndTake/Native/Node/` only as they
+and note together. Add `VDSI/Native/Chain/`,
+`VDSI/Native/Stablecoin/`, and `VDSI/Native/Node/` only as they
 acquire working implementations. Reuse shared
 types where appropriate and keep reference models identifiable. Create no empty
 framework modules or commands that merely print a planned workflow.

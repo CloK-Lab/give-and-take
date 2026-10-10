@@ -3,15 +3,15 @@
   "schemaVersion": 1,
   "project": {
     "slug": "give-and-take",
-    "title": "Give and take",
-    "category": "Learning agent protocols",
-    "description": "Formal models, specifications, and executable code in Lean for decentralized agent economies: task delegation, token transfers, and on-chain payments."
+    "title": "ν-DSI",
+    "category": "Verified DSI infrastructure",
+    "description": "Formal models, executable infrastructure, and proofs in Lean for human-agent coordination and resource allocation through digital tokenomics."
   },
   "docs": {
     "format": "mdx",
     "entry": "docs/Overview.mdx",
     "include": [
-      "GiveAndTake/**/Note.mdx",
+      "VDSI/**/Note.mdx",
       "docs/topics/*.md"
     ]
   }
