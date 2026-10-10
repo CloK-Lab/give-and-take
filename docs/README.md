@@ -1,9 +1,12 @@
 # Writing a learning note
 
-Work through one question at a time. Start with an example, explain the modeling
-choices, and connect the Lean definitions to the behavior being studied. Include
+Work through one question at a time. Open with a concise academic introduction
+stating the subject, scope, and modeling or implementation work in the note.
+Name and link the main reference documents where relevant. Develop worked
+examples in the relevant subsections, explain the modeling choices, and connect
+the Lean definitions to the behavior being studied. Include
 enough reasoning for a reader to follow the result. Prefer revising an unclear
-note to adding another topic. [One paid call](../GiveAndTake/PaidCall/Note.mdx)
+note to adding another topic. [One paid call](../GiveAndTake/Cases/PaidCall/Note.mdx)
 is the first example.
 
 ## Preview locally
@@ -20,7 +23,8 @@ the changed pages, including at phone width. `npm run preview` serves the built 
 
 ## Keep the note beside its code
 
-Write `GiveAndTake/<Case>/Note.mdx`. Its metadata supplies the navigation:
+Write `Note.mdx` beside the relevant module, for example
+`GiveAndTake/Cases/PaidCall/Note.mdx`. Its metadata supplies the navigation:
 
 ```yaml
 ---
@@ -32,8 +36,12 @@ order: 2
 ```
 
 Use a unique slug and choose an order for the reading sequence. Add `draft: true`
-while a note is unfinished; drafts stay out of the site. The reading lists in
-`topics/` are drafts until we develop them into useful explanations.
+while a note is unfinished; drafts stay out of the site. Keep standalone research
+topics in `topics/`. When a topic is developed beside a module, consolidate its
+useful sources and modeling questions there and remove the superseded draft.
+Preserve slugs, section labels, and ordering when moving source directories.
+The Preliminaries reading group spans `Foundation/`, `Reference/`, and
+`Native/Wallet/`; it does not prescribe a code dependency or directory.
 
 The page supplies its own title, so start the body with prose. Use ordinary
 Markdown for the explanation and `$...$` for inline math. There is no required

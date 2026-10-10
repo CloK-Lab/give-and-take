@@ -1,15 +1,29 @@
 # Working on Give and take
 
-This is a CloK learning and research project. Its purpose is to build formal
-models, specifications, and executable code in Lean for studying agent protocols,
-payments, tokenized assets, incentives, and safety.
+This is a CloK learning and research project toward a verified decentralized
+superintelligence (DSI) system. Its purpose is to build formal models,
+specifications, and executable code in Lean for human-agent coordination and
+physical and computational resource allocation, supporting the construction,
+verification, and improvement of infrastructure. Agent protocols, payments,
+tokenized assets, incentives, and safety are parts of that system.
 
+- Implement the project's own chain, stablecoin mechanisms, wallets, payment
+  rules, and agent protocols natively in Lean. External infrastructure is
+  reference material only; do not build the runtime on external chains, issued
+  stablecoins, hosted payment services, or their SDKs. Keep reference probes
+  separate from project execution and record the actual implementation status.
+- Retain executable Lean models of external infrastructure as reference cases
+  alongside the native implementation. Compare selected compositions through
+  explicit common specifications and observation mappings. Distinguish shared
+  safety properties, refinement, and behavioral equivalence; model proofs do
+  not by themselves establish conformance of deployed external systems.
 - Prioritize learning: explain one small question clearly before adding topics.
-  Start notes with a worked example and explain why each modeling choice matters.
+  Use worked examples in the relevant subsections to explain modeling choices.
   Keep reader navigation small, leave undeveloped topics as drafts, and avoid
   unnecessary frameworks, checklists, and duplicate explanations.
-- Published notes should state what is being studied and explain the subject
-  directly. Keep writing advice, learning methods, project positioning, and
+- Open each note with a concise academic statement of its subject, scope, and
+  actual modeling or implementation work. Cite the main reference documents
+  where relevant. Keep writing advice, learning methods, project positioning, and
   promises about future work in contributor documentation, not reader-facing prose.
   End notes when the subject is explained; do not append generic outlook or
   open-question sections.
@@ -22,6 +36,11 @@ payments, tokenized assets, incentives, and safety.
 - Read README.md, CONTRIBUTING.md, and the guide for the case being changed.
 - Keep definitions, specifications, execution, and verification separate.
   The demo and proofs must refer to the same executable Lean definitions.
+- Follow the source layout in README.md and docs/ARCHITECTURE.md. Foundation
+  has no dependencies on other project layers; Reference and Native do not
+  depend on each other or Cases. Keep cross-layer fixtures in Cases and future
+  correspondence proofs in Comparisons. Website navigation is independent of
+  source paths; preserve note slugs when moving modules.
 - Add concrete cases before introducing general frameworks. Do not create empty
   modules for planned features or describe reading notes as implementations.
 - Preserve explicit units, assumptions, source versions, and proof boundaries.

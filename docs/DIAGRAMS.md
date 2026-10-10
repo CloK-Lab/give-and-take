@@ -126,6 +126,33 @@ credited there to [Ethereum EVM illustrated](https://takenobu-hs.github.io/downl
 The new drawing uses the notebook's geometry and numerical fixtures; no source
 artwork is embedded. Keep the energy example separate from the gas example.
 
+[`tools/draw-x402-payment.py`](../tools/draw-x402-payment.py) draws the successful
+HTTP v2 `exact` / EIP-3009 `authorization` flow at x402 revision `7f2b2f1`.
+Use sequence lanes for the agent, resource server, facilitator, and chain.
+Keep the wallet's local policy decision, read-only verification, service
+execution, and token settlement separate. Service execution precedes settlement
+in this flow. The compact view preserves the same eight steps in vertical cards.
+This figure describes the upstream protocol; the current Lean projection models
+only payment requirements and integer amount decoding.
+
+[`tools/draw-payment-infrastructure.py`](../tools/draw-payment-infrastructure.py)
+generates three source-study figures with illustrative prices and balances:
+
+- `ap2-authorization.svg`: the evidence relationships for an autonomous purchase
+  in AP2 v0.2 at `e1ea56d`. Open mandates and the merchant's checkout are inputs
+  to the agent's closed mandates. The diagram groups payment verification roles;
+  it is not a complete message sequence.
+- `gateway-batch-settlement.svg`: USDC balances before acceptance, while pending,
+  and after batch confirmation. Three charges total 0.010 USDC. Fees are excluded;
+  the service can respond while funds are pending.
+- `nevermined-billing.svg`: one successful call under two example plans. A prepaid
+  plan consumes three of 100 credits; a pay-as-you-go plan charges USD 0.03.
+  Keep the units and the time of charging explicit.
+
+The Circle and Nevermined references were consulted on 9 October 2026. Each
+figure has a separate compact layout. The accompanying note states which
+upstream behavior is studied and the narrower scope of the executable Lean model.
+
 ```sh
 python3 tools/draw-native-system.py
 python3 tools/draw-ethereum-mechanism.py
@@ -134,6 +161,8 @@ python3 tools/draw-bitcoin-proof-of-work.py
 python3 tools/draw-quantities.py
 python3 tools/draw-learning-figures.py
 python3 tools/draw-economy-overview.py
+python3 tools/draw-x402-payment.py
+python3 tools/draw-payment-infrastructure.py
 npm run build
 ```
 
